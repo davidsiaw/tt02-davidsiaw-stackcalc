@@ -15,7 +15,7 @@ jobs:
       uses: YosysHQ/setup-oss-cad-suite@v1
       with:
           python-override: true
-    - run: | 
+    - run: |
         yosys --version
         iverilog -V
         cocotb-config --libpython
