@@ -3,7 +3,7 @@ from cocotb.clock import Clock
 from cocotb.triggers import RisingEdge, FallingEdge, Timer, ClockCycles
 
 
-segments = [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ]
+segments = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ]
 
 @cocotb.test()
 async def test_7seg(dut):
