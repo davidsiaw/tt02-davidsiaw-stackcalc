@@ -21,7 +21,7 @@ module tb (
     end
 
     // wire up the inputs and outputs
-    wire [7:0] inputs = {6'b0, rst, clk};
+    wire [7:0] inputs = {5'b0, rst, clk};
     wire [7:0] outputs;
     assign segments = outputs[6:0];
 
