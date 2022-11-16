@@ -3,7 +3,7 @@
 project:
   wokwi_id:    0        # If using wokwi, set this to your project's ID
   source_files:        # If using an HDL, set wokwi_id as 0 and uncomment and list your source files here. Source files must be in ./src
-    - counter.v
+    - top.v
     - decoder.v
   top_module:  "davidsiaw_stackcalc"      # put the name of your top module here, make it unique by prepending your github username
 

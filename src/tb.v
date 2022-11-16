@@ -26,7 +26,7 @@ module tb (
     assign segments = outputs[6:0];
 
     // instantiate the DUT
-    seven_segment_seconds #(.MAX_COUNT(100)) seven_segment_seconds(
+    davidsiaw_stackcalc #(.MAX_COUNT(100)) seven_segment_seconds(
         .io_in  (inputs),
         .io_out (outputs)
         );
