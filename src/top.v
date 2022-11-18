@@ -6,7 +6,7 @@ module sky130_fd_sc_hd__clkdlybuf4s15(input A, output reg X);
     #100;
     X = ~A;
   end
-endmodule;
+endmodule
 
 module davidsiaw_stackcalc (
   input wire [7:0] io_in,
