@@ -2,22 +2,57 @@ import cocotb
 from cocotb.clock import Clock
 from cocotb.triggers import RisingEdge, FallingEdge, Timer, ClockCycles
 
-
-segments = [ 0, 1, 2, 3, 4, 0, 1, 2, 3, 4, 0 ]
-
-@cocotb.test()
-async def test_7seg(dut):
+async def reset_for_start(dut):
     dut._log.info("start")
-    clock = Clock(dut.clk, 10, units="us")
+    clock = Clock(dut.globclk, 1, units="us")
     cocotb.fork(clock.start())
+
+    await ClockCycles(dut.globclk, 1)
     
     dut._log.info("reset")
     dut.rst.value = 1
-    await ClockCycles(dut.clk, 10)
+    dut.clk.value = 1
+
+    for n in range(3):
+        await ClockCycles(dut.globclk, 5)
+        dut.clk.value = 0
+        await ClockCycles(dut.globclk, 5)
+        dut.clk.value = 1
+
     dut.rst.value = 0
 
-    dut._log.info("check all segments")
-    for i in range(10):
-        dut._log.info("check segment {}".format(i))
-        await ClockCycles(dut.clk, 100)
-        assert int(dut.segments.value) == segments[i]
+@cocotb.test()
+async def push_op(dut):
+    await reset_for_start(dut)
+
+    await ClockCycles(dut.globclk, 5)
+    dut.clk.value = 0
+
+    await ClockCycles(dut.globclk, 4)
+
+    dut._log.info("setup push opcode")
+    dut.io_ins.value = 0x1
+
+    dut._log.info("tick up")
+    await ClockCycles(dut.globclk, 1)
+    dut.clk.value = 1
+
+    await ClockCycles(dut.globclk, 5)
+    dut.clk.value = 0
+
+    await ClockCycles(dut.globclk, 4)
+
+    dut._log.info("setup operand")
+    dut.io_ins.value = 0x5
+
+    dut._log.info("tick up")
+    await ClockCycles(dut.globclk, 1)
+    dut.clk.value = 1
+
+    await ClockCycles(dut.globclk, 5)
+    dut.clk.value = 0
+
+
+    dut.io_ins.value = 0x0
+    assert int(dut.io_outs.value) == 0x5
+
