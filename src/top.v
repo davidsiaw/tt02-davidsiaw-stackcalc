@@ -1,3 +1,4 @@
+
 `default_nettype none
 
 module davidsiaw_stackcalc (
@@ -16,7 +17,14 @@ module davidsiaw_stackcalc (
   reg pushflag;
   reg [3:0] stacktop;
 
-  always @ (posedge clk) begin
+  wire delayin;
+  wire delayout;
+
+
+  sky130_fd_sc_hd__clkdlybuf4s15 inverter1 (.A( clk ),     .X( delayin ));
+  sky130_fd_sc_hd__clkdlybuf4s15 inverter2 (.A( delayin ), .X( delayout ));
+
+  always @ (posedge delayout) begin
     // The reset circuit
     if(rst == 1) begin
       pushflag <= 0;

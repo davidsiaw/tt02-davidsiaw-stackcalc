@@ -19,40 +19,36 @@ async def reset_for_start(dut):
         await ClockCycles(dut.globclk, 5)
         dut.clk.value = 1
 
+    await ClockCycles(dut.globclk, 5)
     dut.rst.value = 0
 
 @cocotb.test()
 async def push_op(dut):
     await reset_for_start(dut)
 
-    await ClockCycles(dut.globclk, 5)
-    dut.clk.value = 0
 
-    await ClockCycles(dut.globclk, 4)
+    dut.clk.value = 0
+    await ClockCycles(dut.globclk, 5)
+
+    dut._log.info("tick up")
+    dut.clk.value = 1
 
     dut._log.info("setup push opcode")
     dut.io_ins.value = 0x1
+    await ClockCycles(dut.globclk, 5)
+
+    dut.clk.value = 0
+    await ClockCycles(dut.globclk, 5)
 
     dut._log.info("tick up")
-    await ClockCycles(dut.globclk, 1)
     dut.clk.value = 1
-
-    await ClockCycles(dut.globclk, 5)
-    dut.clk.value = 0
-
-    await ClockCycles(dut.globclk, 4)
 
     dut._log.info("setup operand")
     dut.io_ins.value = 0x5
-
-    dut._log.info("tick up")
-    await ClockCycles(dut.globclk, 1)
-    dut.clk.value = 1
-
     await ClockCycles(dut.globclk, 5)
+    
     dut.clk.value = 0
+    await ClockCycles(dut.globclk, 5)
 
-
-    dut.io_ins.value = 0x0
     assert int(dut.io_outs.value) == 0x5
 
