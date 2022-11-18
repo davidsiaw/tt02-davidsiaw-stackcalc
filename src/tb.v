@@ -6,13 +6,6 @@ this testbench just instantiates the module and makes some convenient wires
 that can be driven / tested by the cocotb test.py
 */
 
-module sky130_fd_sc_hd__clkdlybuf4s15(input A, output reg X);
-  always @ (*) begin
-    #100;
-    X = ~A;
-  end
-endmodule;
-
 module tb (
     // testbench is controlled by test.py
     input globclk,
