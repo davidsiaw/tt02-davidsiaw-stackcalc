@@ -1,13 +1,6 @@
 
 `default_nettype none
 
-module sky130_fd_sc_hd__clkdlybuf4s15(input A, output reg X);
-  always @ (*) begin
-    #100;
-    X = ~A;
-  end
-endmodule
-
 module davidsiaw_stackcalc (
   input wire [7:0] io_in,
   output wire [7:0] io_out
@@ -28,8 +21,8 @@ module davidsiaw_stackcalc (
   wire delayout;
 
 
-  sky130_fd_sc_hd__clkdlybuf4s15 delay1 (.A( clk ),     .X( delayin ));
-  sky130_fd_sc_hd__clkdlybuf4s15 delay2 (.A( delayin ), .X( delayout ));
+  sky130_fd_sc_hd__clkdlybuf4s15_1 delay1 (.A( clk ),     .X( delayin ));
+  sky130_fd_sc_hd__clkdlybuf4s15_1 delay2 (.A( delayin ), .X( delayout ));
 
   always @ (posedge delayout) begin
     // The reset circuit
