@@ -1,6 +1,13 @@
 `default_nettype none
 `timescale 1ns/1ps
 
+module sky130_fd_sc_hd__clkdlybuf4s15_1(input A, output reg X);
+  always @ (*) begin
+    #100;
+    X = ~A;
+  end
+endmodule
+
 /*
 this testbench just instantiates the module and makes some convenient wires
 that can be driven / tested by the cocotb test.py
