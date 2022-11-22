@@ -46,8 +46,11 @@ async def push_op(dut):
     dut._log.info("setup operand")
     dut.io_ins.value = 0x5
     await ClockCycles(dut.globclk, 5)
-    
+
     dut.clk.value = 0
+    await ClockCycles(dut.globclk, 5)
+    
+    dut.clk.value = 1
     await ClockCycles(dut.globclk, 5)
 
     assert int(dut.io_outs.value) == 0x5

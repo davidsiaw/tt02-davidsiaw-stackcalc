@@ -18,33 +18,34 @@ module davidsiaw_stackcalc (
 
   reg pushflag;
 
-  reg [`STACK_SIZE * 4 - 1:0] stack;
-
   wire delayedclk;
+  wire delayedclk2;
 
-  sky130_fd_sc_hd__clkdlybuf4s15_1 delay1 (.A( clk ),     .X( delayedclk ));
+  wire [7:0]w0;
+  wire [7:0]w1;
+  wire [7:0]w2;
+  wire [7:0]w3;
 
-  always @ (posedge delayedclk) begin
+  sky130_fd_sc_hd__clkdlybuf4s15_1 delay1 (.A( clk ),        .X( delayedclk ));
+  sky130_fd_sc_hd__clkdlybuf4s15_1 delay2 (.A( delayedclk ), .X( delayedclk2 ));
+
+  wire shiftdir;
+  assign shiftdir = 1'b0;
+
+  shiftreg a0(.d(inbits[0]), .clk(delayedclk), .en(pushflag), .dir(shiftdir), .rst(rst), .q(w0));
+  shiftreg a1(.d(inbits[1]), .clk(delayedclk), .en(pushflag), .dir(shiftdir), .rst(rst), .q(w1));
+  shiftreg a2(.d(inbits[2]), .clk(delayedclk), .en(pushflag), .dir(shiftdir), .rst(rst), .q(w2));
+  shiftreg a3(.d(inbits[3]), .clk(delayedclk), .en(pushflag), .dir(shiftdir), .rst(rst), .q(w3));
+
+  always @ (negedge delayedclk2) begin
     // The reset circuit
     if(rst == 1) begin
       pushflag <= 0;
-      stack <= 0;
     end
 
     else begin
-
       // accept operation
       if(pushflag == 1) begin
-
-        stack[31:28] <= stack[27:24];
-        stack[27:24] <= stack[23:20];
-        stack[23:20] <= stack[19:16];
-        stack[19:16] <= stack[15:12];
-        stack[15:12] <= stack[11:8];
-        stack[11:8]  <= stack[7:4];
-        stack[7:4]   <= stack[3:0];
-
-        stack[3:0] <= inbits;
         pushflag = 0;
       end
       else begin
@@ -57,7 +58,5 @@ module davidsiaw_stackcalc (
 
   end
 
-  assign io_out = { 4'b0000, stack[3:0] };
-
-
+  assign io_out = { 4'b0000, w3[0], w2[0], w1[0], w0[0] };
 endmodule
