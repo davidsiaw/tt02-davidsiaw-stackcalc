@@ -7,16 +7,19 @@ module shiftreg #(parameter SIZE=8) (
   output reg [SIZE-1:0] q);
 
    always @ (posedge clk) begin
-      if (rst)
+      if (rst) begin
         q = 0;
+      end
       else begin
-        if (en)
+        if (en) begin
           case (dir)
             1'b0: q = { q[SIZE-2:0], d };
             1'b1: q = { 1'b0, q[SIZE-1:1] };
           endcase
-        else
-          q <= q;
+        end
+        else begin
+          q = q;
+        end
       end
     end
 endmodule
