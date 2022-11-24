@@ -23,7 +23,7 @@ module stack_register (
       word3 = 0;
     end
     else begin
-
+    
     end
   end
 

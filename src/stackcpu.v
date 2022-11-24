@@ -28,11 +28,14 @@ module stackcpu (
   reg shiftflag;
   reg shiftdir;
 
-  always @ (posedge clk) begin
+  reg [7:0] out_dff;
+
+  always @ (posedge delayedclk) begin
     // The reset circuit
     if(rst == 1) begin
       shiftflag = 0;
       shiftdir = 0;
+      out_dff = 0;
     end
 
     else begin
@@ -42,20 +45,21 @@ module stackcpu (
           shiftflag = 1;
           shiftdir = 1;
         end
+        // out
+        else if (inbits == 4'b0011) begin
+          out_dff <= { 4'b0000, w3[0], w2[0], w1[0], w0[0] };
+        end
       end
-
     end
 
   end
 
-  shiftreg #(.SIZE(`STACK_SIZE)) a0(.d(inbits[0]), .clk(delayedclk), .en(shiftflag), .dir(shiftdir), .rst(rst), .q(w0));
-  shiftreg #(.SIZE(`STACK_SIZE)) a1(.d(inbits[1]), .clk(delayedclk), .en(shiftflag), .dir(shiftdir), .rst(rst), .q(w1));
-  shiftreg #(.SIZE(`STACK_SIZE)) a2(.d(inbits[2]), .clk(delayedclk), .en(shiftflag), .dir(shiftdir), .rst(rst), .q(w2));
-  shiftreg #(.SIZE(`STACK_SIZE)) a3(.d(inbits[3]), .clk(delayedclk), .en(shiftflag), .dir(shiftdir), .rst(rst), .q(w3));
+  shiftreg #(.SIZE(`STACK_SIZE)) a0(.d(inbits[0]), .clk(delayedclk2), .en(shiftflag), .dir(shiftdir), .rst(rst), .q(w0));
+  shiftreg #(.SIZE(`STACK_SIZE)) a1(.d(inbits[1]), .clk(delayedclk2), .en(shiftflag), .dir(shiftdir), .rst(rst), .q(w1));
+  shiftreg #(.SIZE(`STACK_SIZE)) a2(.d(inbits[2]), .clk(delayedclk2), .en(shiftflag), .dir(shiftdir), .rst(rst), .q(w2));
+  shiftreg #(.SIZE(`STACK_SIZE)) a3(.d(inbits[3]), .clk(delayedclk2), .en(shiftflag), .dir(shiftdir), .rst(rst), .q(w3));
 
-
-
-  always @ (negedge delayedclk2) begin
+  always @ (negedge clk) begin
     // The reset circuit
     if(rst == 1) begin
       shiftflag = 0;
@@ -75,12 +79,8 @@ module stackcpu (
       end
 
     end
-
   end
 
-  wire dummy;
-  assign dummy = w0[7] ^ w1[7] ^ w2[7] ^ w3[7];
-
-  assign io_out = { 3'b000, dummy, w3[0], w2[0], w1[0], w0[0] };
+  assign io_out = out_dff;
 
 endmodule
