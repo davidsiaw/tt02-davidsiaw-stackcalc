@@ -4,7 +4,7 @@
 module sky130_fd_sc_hd__clkdlybuf4s15_1(input A, output reg X);
   always @ (*) begin
     #100;
-    X = ~A;
+    X = A;
   end
 endmodule
 
