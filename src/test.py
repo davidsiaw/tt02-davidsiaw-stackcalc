@@ -2,6 +2,12 @@ import cocotb
 from cocotb.clock import Clock
 from cocotb.triggers import RisingEdge, FallingEdge, Timer, ClockCycles
 
+async def select_cpu(dut):
+    dut.select.value = 0x1
+
+async def select_stack_register(dut):
+    dut.select.value = 0x2
+
 async def reset_for_start(dut):
     dut._log.info("start")
     clock = Clock(dut.globclk, 1, units="us")
@@ -46,6 +52,7 @@ async def wait_one_cycle(dut):
 
 @cocotb.test()
 async def push_op(dut):
+    await select_cpu(dut)
     await reset_for_start(dut)
 
     await latch_input(dut, 0x1) # PUSH
@@ -57,6 +64,7 @@ async def push_op(dut):
 
 @cocotb.test()
 async def push2_op(dut):
+    await select_cpu(dut)
     await reset_for_start(dut)
 
     await latch_input(dut, 0x1) # PUSH
@@ -70,6 +78,7 @@ async def push2_op(dut):
 
 @cocotb.test()
 async def pop_op(dut):
+    await select_cpu(dut)
     await reset_for_start(dut)
 
     # result available immediately
@@ -84,6 +93,7 @@ async def pop_op(dut):
 
 @cocotb.test()
 async def pop_op_nop(dut):
+    await select_cpu(dut)
     await reset_for_start(dut)
 
     # result persists
