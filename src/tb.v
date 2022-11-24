@@ -18,9 +18,11 @@ module tb (
     input globclk,
     input clk,
     input rst,
+    input [31:0] select,
     input [3:0] io_ins,
-
-    output [3:0] io_outs
+    input mode,
+    output [3:0] io_outs,
+    output [3:0] io_outs2
    );
 
     // this part dumps the trace to a vcd file that can be viewed with GTKWave
@@ -33,12 +35,25 @@ module tb (
     // wire up the inputs and outputs
     wire [7:0] inputs = {clk, rst, 1'b0, 1'b0, io_ins};
     wire [7:0] outputs;
-    assign io_outs = outputs[3:0];
 
     // instantiate the DUT
-    davidsiaw_stackcalc dut(
+    stackcpu dut1(
         .io_in  (inputs),
         .io_out (outputs)
-        );
+    );
+
+    wire [3:0]regout1;
+    wire [3:0]regout2;
+    stack_register dut2(
+        .clk(clk),
+        .rst(rst),
+        .mode(mode), // 1 push, 0 pop
+        .in_word(io_ins),
+        .top_word(regout1),
+        .second_word(regout2)
+    );
+
+    assign io_outs = {4{select[0]}} & outputs[3:0] |
+                     {4{select[1]}} & regout1;
 
 endmodule

@@ -1,83 +1,40 @@
 
 `default_nettype none
 
-`define STACK_SIZE 8
+module stack_register (
+  input wire clk,
+  input wire rst,
+  input wire mode, // 1 push, 0 pop
+  input wire [3:0] in_word,
+  output wire [3:0] top_word,
+  output wire [3:0] second_word
+);
+
+  reg [4:0] word0;
+  reg [4:0] word1;
+  reg [4:0] word2;
+  reg [4:0] word3;
+
+  always @ (posedge clk) begin
+    if (rst == 1'b1) begin
+      word0 = 0;
+      word1 = 0;
+      word2 = 0;
+      word3 = 0;
+    end
+    else begin
+
+    end
+  end
+
+  assign top_word = word0[3:0];
+  assign second_word = word1[3:0];
+
+endmodule
 
 module davidsiaw_stackcalc (
   input wire [7:0] io_in,
   output wire [7:0] io_out
 );
-  wire clk;
-  wire rst;
-  wire [3:0] inbits;
-
-  assign clk = io_in[7];
-  assign rst = io_in[6];
-
-  assign inbits = io_in[3:0];
-
-
-  wire delayedclk;
-  wire delayedclk2;
-
-  wire [7:0]w0;
-  wire [7:0]w1;
-  wire [7:0]w2;
-  wire [7:0]w3;
-
-  sky130_fd_sc_hd__clkdlybuf4s15_1 delay1 (.A( clk ),        .X( delayedclk ));
-  sky130_fd_sc_hd__clkdlybuf4s15_1 delay2 (.A( delayedclk ), .X( delayedclk2 ));
-
-  reg shiftflag;
-  reg shiftdir;
-
-  always @ (posedge clk) begin
-    // The reset circuit
-    if(rst == 1) begin
-      shiftflag = 0;
-      shiftdir = 0;
-    end
-
-    else begin
-      if(shiftflag != 1) begin
-        // pop
-        if(inbits == 4'b0010) begin
-          shiftflag = 1;
-          shiftdir = 1;
-        end
-      end
-
-    end
-
-  end
-
-  shiftreg #(.SIZE(`STACK_SIZE)) a0(.d(inbits[0]), .clk(delayedclk), .en(shiftflag), .dir(shiftdir), .rst(rst), .q(w0));
-  shiftreg #(.SIZE(`STACK_SIZE)) a1(.d(inbits[1]), .clk(delayedclk), .en(shiftflag), .dir(shiftdir), .rst(rst), .q(w1));
-  shiftreg #(.SIZE(`STACK_SIZE)) a2(.d(inbits[2]), .clk(delayedclk), .en(shiftflag), .dir(shiftdir), .rst(rst), .q(w2));
-  shiftreg #(.SIZE(`STACK_SIZE)) a3(.d(inbits[3]), .clk(delayedclk), .en(shiftflag), .dir(shiftdir), .rst(rst), .q(w3));
-
-  always @ (negedge delayedclk2) begin
-    // The reset circuit
-    if(rst == 1) begin
-      shiftflag = 0;
-    end
-
-    else begin
-      // accept operation
-      if(shiftflag == 1) begin
-        // reset previous shiftflag
-        shiftflag = 0;
-      end
-      else begin
-        if(inbits == 4'b0001) begin
-          shiftflag = 1;
-          shiftdir = 0;
-        end
-      end
-
-    end
-
-  end
-
-  assign io_out = { 4'b0000, w3[0], w2[0], w1[0], w0[0] };
+  stackcpu cpu(.io_in(io_in), .io_out(io_out));
 endmodule
