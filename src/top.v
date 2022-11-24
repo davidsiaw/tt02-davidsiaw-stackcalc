@@ -34,8 +34,8 @@ module davidsiaw_stackcalc (
   always @ (posedge clk) begin
     // The reset circuit
     if(rst == 1) begin
-      shiftflag <= 0;
-      shiftdir <= 0;
+      shiftflag = 0;
+      shiftdir = 0;
     end
 
     else begin
@@ -59,7 +59,7 @@ module davidsiaw_stackcalc (
   always @ (negedge delayedclk2) begin
     // The reset circuit
     if(rst == 1) begin
-      shiftflag <= 0;
+      shiftflag = 0;
     end
 
     else begin
