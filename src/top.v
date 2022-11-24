@@ -37,7 +37,7 @@ module davidsiaw_stackcalc (
   shiftreg a2(.d(inbits[2]), .clk(delayedclk), .en(pushflag), .dir(shiftdir), .rst(rst), .q(w2));
   shiftreg a3(.d(inbits[3]), .clk(delayedclk), .en(pushflag), .dir(shiftdir), .rst(rst), .q(w3));
 
-  always @ (negedge delayedclk2) begin
+  always @ (posedge delayedclk2) begin
     // The reset circuit
     if(rst == 1) begin
       pushflag <= 0;
