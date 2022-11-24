@@ -13,8 +13,8 @@ module shiftreg #(parameter SIZE=8) (
       else begin
         if (en) begin
           case (dir)
-            1'b0: q <= {SIZE{1'b0}} ^ { q[SIZE-2:0], d };
-            1'b1: q <= {SIZE{1'b0}} ^ { 1'b0, q[SIZE-1:1] };
+            1'b0: q <= {       q[SIZE-2:0], d };
+            1'b1: q <= { 1'b0, q[SIZE-1:1] };
           endcase
         end
         else begin
