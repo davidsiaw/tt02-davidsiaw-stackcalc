@@ -57,6 +57,7 @@ async def push_op(dut):
 
     await latch_input(dut, 0x1) # PUSH
     await latch_input(dut, 0x5) # 0x5
+    await latch_input(dut, 0x3) # OUT
     await wait_one_cycle(dut)
 
     assert int(dut.io_outs.value) == 0x5
@@ -71,6 +72,7 @@ async def push2_op(dut):
     await latch_input(dut, 0x5) # 0x5
     await latch_input(dut, 0x1) # PUSH
     await latch_input(dut, 0x7) # 0x7
+    await latch_input(dut, 0x3) # OUT
     await wait_one_cycle(dut)
 
     assert int(dut.io_outs.value) == 0x7
@@ -87,23 +89,8 @@ async def pop_op(dut):
     await latch_input(dut, 0x1) # PUSH
     await latch_input(dut, 0x7) # 0x7
     await latch_input(dut, 0x2) # POP
+    await latch_input(dut, 0x3) # OUT
 
     assert int(dut.io_outs.value) == 0x5
 
-
-@cocotb.test()
-async def pop_op_nop(dut):
-    await select_cpu(dut)
-    await reset_for_start(dut)
-
-    # result persists
-    await latch_input(dut, 0x1) # PUSH
-    await latch_input(dut, 0x5) # 0x5
-    await latch_input(dut, 0x1) # PUSH
-    await latch_input(dut, 0x7) # 0x7
-    await latch_input(dut, 0x2) # POP
-    await latch_input(dut, 0x0) # NOOP
-    await wait_one_cycle(dut)
-
-    assert int(dut.io_outs.value) == 0x5
 
