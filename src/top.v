@@ -32,10 +32,10 @@ module davidsiaw_stackcalc (
   wire shiftdir;
   assign shiftdir = 1'b0;
 
-  shiftreg a0(.d(inbits[0]), .clk(delayedclk), .en(pushflag), .dir(shiftdir), .rst(rst), .q(w0));
-  shiftreg a1(.d(inbits[1]), .clk(delayedclk), .en(pushflag), .dir(shiftdir), .rst(rst), .q(w1));
-  shiftreg a2(.d(inbits[2]), .clk(delayedclk), .en(pushflag), .dir(shiftdir), .rst(rst), .q(w2));
-  shiftreg a3(.d(inbits[3]), .clk(delayedclk), .en(pushflag), .dir(shiftdir), .rst(rst), .q(w3));
+  shiftreg #(.SIZE(`STACK_SIZE)) a0(.d(inbits[0]), .clk(delayedclk), .en(pushflag), .dir(shiftdir), .rst(rst), .q(w0));
+  shiftreg #(.SIZE(`STACK_SIZE)) a1(.d(inbits[1]), .clk(delayedclk), .en(pushflag), .dir(shiftdir), .rst(rst), .q(w1));
+  shiftreg #(.SIZE(`STACK_SIZE)) a2(.d(inbits[2]), .clk(delayedclk), .en(pushflag), .dir(shiftdir), .rst(rst), .q(w2));
+  shiftreg #(.SIZE(`STACK_SIZE)) a3(.d(inbits[3]), .clk(delayedclk), .en(pushflag), .dir(shiftdir), .rst(rst), .q(w3));
 
   always @ (posedge delayedclk2) begin
     // The reset circuit
