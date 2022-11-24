@@ -8,17 +8,17 @@ module shiftreg #(parameter SIZE=8) (
 
    always @ (posedge clk) begin
       if (rst) begin
-        q = 0;
+        q <= 0;
       end
       else begin
         if (en) begin
           case (dir)
-            1'b0: q = { q[SIZE-2:0], d };
-            1'b1: q = { 1'b0, q[SIZE-1:1] };
+            1'b0: q <= {SIZE{1'b0}} ^ { q[SIZE-2:0], d };
+            1'b1: q <= {SIZE{1'b0}} ^ { 1'b0, q[SIZE-1:1] };
           endcase
         end
         else begin
-          q = q;
+          q <= q;
         end
       end
     end
