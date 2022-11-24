@@ -33,7 +33,7 @@ module tb (
     end
 
     // wire up the inputs and outputs
-    wire [7:0] inputs = {clk, rst, 1'b0, 1'b0, io_ins};
+    wire [7:0] inputs = {1'b0, 1'b0, io_ins, rst, clk};
     wire [7:0] outputs;
 
     // instantiate the DUT

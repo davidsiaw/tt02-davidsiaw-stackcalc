@@ -8,11 +8,10 @@ module stackcpu (
   wire rst;
   wire [3:0] inbits;
 
-  assign clk = io_in[7];
-  assign rst = io_in[6];
+  assign clk = io_in[0];
+  assign rst = io_in[1];
 
-  assign inbits = io_in[3:0];
-
+  assign inbits = io_in[5:2];
 
   wire delayedclk;
   wire delayedclk2;
