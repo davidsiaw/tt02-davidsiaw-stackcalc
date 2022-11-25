@@ -1,5 +1,39 @@
 ![](../../workflows/gds/badge.svg) ![](../../workflows/docs/badge.svg) ![](../../workflows/test/badge.svg)
 
+# David's Stack Calculator
+
+This TinyTapeout submission is a 4-bit stack machine.
+
+doc still in progress
+
+## Opcodes
+
+It implements the following opcodes
+
+- 0x1 PUSH - 3 cycles - push, value, wait
+- 0x2 POP  - 3 cycles - pop, wait, wait
+- 0x3 OUTL - 2 cycles - outl, wait
+- 0x4 OUTH - 2 cycles - outh, wait
+- 0x5 SWAP - 3 cycles - swap, wait, wait
+- 0x6 PEEK - 3 cycles - swap, wait, wait
+- 0x7 DUPL - 3 cycles - swap, wait, wait
+
+## Pinouts
+
+INPUT0 clock (c)
+INPUT1 reset (let the clock tick a few times while reset is high)
+INPUT2-5 Inputs (opcodes and input go here)
+INPUT6-7 debug (0 - output dff contents, 1 - stack top 7-segment hex, 2 - tbd, 3 - tbd)
+
+OUTPUT0-7 depends on the mode
+
+## Wishlist
+
+- make peek and dupl a sort of pushf that
+  - lets me have a parameter that says v0 or v1
+  - and an operation to go with it
+  - to save opcode space
+
 # What is Tiny Tapeout?
 
 TinyTapeout is an educational project that aims to make it easier and cheaper than ever to get your digital designs manufactured on a real chip!

@@ -31,19 +31,19 @@ documentation:
   inputs:               # a description of what the inputs do
     - clk
     - rst
-    - tbd
-    - tbd
     - input0
     - input1
     - input2
     - input3
-  outputs:                # a description of what the outputs do
-    - out0
-    - out1
-    - out2 
-    - out3 
-    - tbd
-    - tbd
-    - tbd
-    - tbd
+    - mode0
+    - mode1               
+  outputs:
+    - out0                # all 8 pins of the output are decided by what the mode inputs are set to
+    - out1                # if they are set to
+    - out2                # 0 then they are set to the 8-bit output dff
+    - out3                # 1 then they are set to 7-segment output of the top of the stack
+    - out4
+    - out5
+    - out6
+    - out7
 
