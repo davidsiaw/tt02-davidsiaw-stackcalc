@@ -47,8 +47,7 @@ module tb (
     .second_word(regout2)
   );
 
-
   assign io_outs = {8{select[0]}} & outputs |
-           {4{select[1]}} & regout1;
+                   {4{select[1]}} & regout1;
 
 endmodule
