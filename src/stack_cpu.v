@@ -112,7 +112,7 @@ module stack_cpu (
 
   input_selector userinput_select2(
     .a(~v0),
-    .b(4'h0),
+    .b(-v0),
     .c(4'h0),
     .d(4'h0),
     .e(4'h0),
@@ -255,7 +255,7 @@ module stack_cpu (
 
       end
       else if (current_op == 4'h9) begin
-        // MUL
+        // MULT
 
         if (op_counter == 0) begin
           // first cycle, compute and move the high to the stack
