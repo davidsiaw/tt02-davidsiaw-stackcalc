@@ -95,16 +95,16 @@ module stack_cpu (
 
   // for REPL
   input_selector userinput_select2(
-    .a(~v0),
-    .b(-v0),
-    .c(4'h0),
-    .d(4'h0),
-    .e(4'h0),
-    .f(4'h0),
-    .g(4'h0),
-    .h(4'h0),
+    .a(~v0),                      // not
+    .b(-v0),                      // neg
+    .c(v0+1),                     // incr
+    .d(v0-1),                     // decr
+    .e(v0>>1),                    // shr1
+    .f(v0<<1),                    // shl1
+    .g({v[0], v[3:1]}),           // ror1
+    .h({v[2:0], v[3]}),           // rol1
 
-    .i(4'h0),
+    .i({v[0], v[1], v[2], v[3]}), // flip
     .j(4'h0),
     .k(4'h0),
     .l(4'h0),
@@ -125,7 +125,7 @@ module stack_cpu (
   wire [7:0]mul_result = v0 * v1;
   wire [7:0]div_result = { v1 % v0, v1 / v0 };
 
-  // FOR BINA
+  // for BINA
   input_selector userinput_select3(
     .a(integer_sum[3:0]),
     .b(v0 & v1),
@@ -268,7 +268,7 @@ module stack_cpu (
           stack_mode <= `STACK_MODE_ROLL2;
         end
         else begin
-          if (inbits == 0) begin
+          if (inbits == 0 || inbits == 4) begin
             // ADD
             carry_flag <= integer_sum[4];
           end
