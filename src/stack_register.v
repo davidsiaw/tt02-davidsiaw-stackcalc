@@ -1,4 +1,7 @@
-`define STACK_SIZE 8
+`ifndef CONSTANTS
+   `define CONSTANTS
+   `include "constants.v"
+`endif  
 
 module stack_register (
   input wire [3:0] in_word,
