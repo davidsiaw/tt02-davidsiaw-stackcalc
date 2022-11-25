@@ -5,11 +5,15 @@ module shift_register #(parameter SIZE=8) (
   input en,
   input dir,
   input rst,
+  input swp,
   output reg [SIZE-1:0] q);
 
    always @ (posedge clk) begin
       if (rst) begin
         q <= 0;
+      end
+      else if (swp) begin
+        q <= { q[SIZE-1:2], q[0], q[1] };
       end
       else begin
         if (en) begin
