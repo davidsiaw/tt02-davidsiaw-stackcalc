@@ -127,7 +127,7 @@ module stack_cpu (
     .a(v0 + v1),
     .b(v0 & v1),
     .c(v0 | v1),
-    .d(4'h0),
+    .d(v0 ^ v1),
     .e(4'h0),
     .f(4'h0),
     .g(4'h0),
