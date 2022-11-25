@@ -17,6 +17,21 @@ module word_multiplexer (
 
 endmodule
 
+module output_multiplexer (
+  input [7:0] a, b, c, d,
+  input [1:0] output_mode,
+  output reg [7:0] q
+);
+  always @ (*) begin
+    casez(output_mode)
+      2'b00: q = a;
+      2'b01: q = b;
+      2'b10: q = c;
+      2'b11: q = d;
+      default: q = 8'h00;
+    endcase;
+  end
+endmodule
 
 module stack_cpu (
   input wire [7:0] io_in,
@@ -27,11 +42,13 @@ module stack_cpu (
   wire clk;
   wire rst;
   wire [3:0] inbits;
+  wire [1:0] output_mode;
 
   // assign the inputs
   assign clk = io_in[0];
   assign rst = io_in[1];
   assign inbits = io_in[5:2];
+  assign output_mode = io_in[7:6];
 
   // output latch
   reg [7:0] out_dff;
@@ -180,7 +197,21 @@ module stack_cpu (
     end
   end
 
-  assign io_out = out_dff;
+  wire [6:0]sevenseg;
+
+  decoder seven_seg_decoder(
+    .binary(v0),
+    .segments(sevenseg)
+  );
+
+  output_multiplexer outputter(
+    .a(out_dff),
+    .b({ 1'b0, sevenseg }),
+    .c(8'hff),
+    .d(8'hff),
+    .output_mode(output_mode),
+    .q(io_out)
+  );
 
 endmodule
 
