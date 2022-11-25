@@ -204,7 +204,36 @@ module stack_cpu (
 
         if (op_counter == 0) begin
           input_select <= `SELECT_CALC_STORE;
-          stack_mode <= `STACK_MODE_PUSH;
+          stack_mode <= `STACK_MODE_ROLL2;
+          result_register <= v0 & v1;
+        end
+        else begin
+          stack_mode <= `STACK_MODE_IDLE;
+          fetch_flag <= 1; // complete
+        end
+
+      end
+      else if (current_op == 4'h9) begin
+        // OR
+
+        if (op_counter == 0) begin
+          input_select <= `SELECT_CALC_STORE;
+          stack_mode <= `STACK_MODE_ROLL2;
+          result_register <= v0 | v1;
+        end
+        else begin
+          stack_mode <= `STACK_MODE_IDLE;
+          fetch_flag <= 1; // complete
+        end
+
+      end
+      else if (current_op == 4'ha) begin
+        // ADD
+
+        if (op_counter == 0) begin
+          input_select <= `SELECT_CALC_STORE;
+          stack_mode <= `STACK_MODE_ROLL2;
+          result_register <= v0 + v1;
         end
         else begin
           stack_mode <= `STACK_MODE_IDLE;
