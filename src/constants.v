@@ -11,7 +11,7 @@
 `define SELECT_STACK_TOP0 3'b001
 `define SELECT_STACK_TOP1 3'b010
 `define SELECT_CALC_STORE 3'b011
-`define SELECT_E 3'b100
+`define SELECT_STACK_USER 3'b100
 `define SELECT_F 3'b101
 `define SELECT_G 3'b110
 `define SELECT_H 3'b111

@@ -4,10 +4,10 @@
 `endif  
 
 module input_selector (
-  input [3:0] inputbits,
-              stacktop0,
-              stacktop1,
-              calcstore,
+  input [3:0] a,
+              b,
+              c,
+              d,
               e,
               f,
               g,
@@ -18,14 +18,14 @@ module input_selector (
 
   always @ (*) begin
     casez(s)
-      `SELECT_INPUT_BITS: q = inputbits;
-      `SELECT_STACK_TOP0: q = stacktop0;
-      `SELECT_STACK_TOP1: q = stacktop1;
-      `SELECT_CALC_STORE: q = calcstore;
-      `SELECT_E: q = e;
-      `SELECT_F: q = f;
-      `SELECT_G: q = g;
-      `SELECT_H: q = h;
+      3'b000: q = a;
+      3'b001: q = b;
+      3'b010: q = c;
+      3'b011: q = d;
+      3'b100: q = e;
+      3'b101: q = f;
+      3'b110: q = g;
+      3'b111: q = h;
       default: q = 4'h0;
     endcase;
   end
@@ -81,17 +81,31 @@ module stack_cpu (
 
   // stack input selection
   reg [2:0] input_select;
+  wire [3:0] user_selected_input;
   input_selector stack_input_select(
-    .inputbits(inbits),
-    .stacktop0(v0),
-    .stacktop1(v1),
-    .calcstore(result_register),
-    .e(4'h0),
+    .a(inbits),
+    .b(v0),
+    .c(v1),
+    .d(result_register),
+    .e(user_selected_input),
     .f(4'h0),
     .g(4'h0),
     .h(4'h0),
     .s(input_select),
     .q(stack_input)
+  );
+
+  input_selector userinput_select(
+    .a(v0),
+    .b(v1),
+    .c(4'h0),
+    .d(4'h0),
+    .e(4'h0),
+    .f(4'h0),
+    .g(4'h0),
+    .h(4'h0),
+    .s(inbits),
+    .q(user_selected_input)
   );
 
   // processor state
@@ -174,10 +188,10 @@ module stack_cpu (
 
       end
       else if (current_op == 4'h6) begin
-        // PEEK
+        // PUSF
 
         if (op_counter == 0) begin
-          input_select <= `SELECT_STACK_TOP1;
+          input_select <= `SELECT_STACK_USER;
           stack_mode <= `STACK_MODE_PUSH;
         end
         else begin
@@ -187,16 +201,7 @@ module stack_cpu (
 
       end
       else if (current_op == 4'h7) begin
-        // DUP
-
-        if (op_counter == 0) begin
-          input_select <= `SELECT_STACK_TOP0;
-          stack_mode <= `STACK_MODE_PUSH;
-        end
-        else begin
-          stack_mode <= `STACK_MODE_IDLE;
-          fetch_flag <= 1; // complete
-        end
+        // UNUSED
 
       end
       else if (current_op == 4'h8) begin
