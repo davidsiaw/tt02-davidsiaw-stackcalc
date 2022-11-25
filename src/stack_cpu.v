@@ -88,11 +88,11 @@ module stack_cpu (
     .a(inbits),
     .b(v0),
     .c(v1),
-    .d(result_register),
+    .d(result_register[3:0]),
     .e(user_selected_input),
     .f(user_selected_input2),
     .g(user_selected_input3),
-    .h(4'h0),
+    .h(result_register[7:4]),
     .s(input_select),
     .q(stack_input)
   );
@@ -106,7 +106,7 @@ module stack_cpu (
     .f(4'h0),
     .g(4'h0),
     .h(4'h0),
-    .s(inbits),
+    .s(inbits[2:0]),
     .q(user_selected_input)
   );
 
@@ -119,7 +119,7 @@ module stack_cpu (
     .f(4'h0),
     .g(4'h0),
     .h(4'h0),
-    .s(inbits),
+    .s(inbits[2:0]),
     .q(user_selected_input2)
   );
 
@@ -132,7 +132,7 @@ module stack_cpu (
     .f(4'h0),
     .g(4'h0),
     .h(4'h0),
-    .s(inbits),
+    .s(inbits[2:0]),
     .q(user_selected_input3)
   );
 
@@ -142,7 +142,7 @@ module stack_cpu (
   reg fetch_flag;       // waiting for operation
 
   // calculation registers
-  reg [3:0] result_register;  // store result of math operation
+  reg [7:0] result_register;  // for results 8 bits wide
 
   always @ (posedge clk) begin
     if (rst == 1) begin
@@ -247,7 +247,26 @@ module stack_cpu (
         if (op_counter == 0) begin
           input_select <= `SELECT_USERINPUT3;
           stack_mode <= `STACK_MODE_ROLL2;
-          result_register <= v0 & v1;
+        end
+        else begin
+          stack_mode <= `STACK_MODE_IDLE;
+          fetch_flag <= 1; // complete
+        end
+
+      end
+      else if (current_op == 4'h9) begin
+        // MUL
+
+        if (op_counter == 0) begin
+          // first cycle, compute and move the high to the stack
+          input_select <= `SELECT_RESULTHIGH;
+          stack_mode <= `STACK_MODE_ROLL2;
+          result_register <= v0 * v1;
+        end
+        else if (op_counter == 1) begin
+          // second cycle, move the low to the stack
+          input_select <= `SELECT_RESULT_LOW;
+          stack_mode <= `STACK_MODE_PUSH;
         end
         else begin
           stack_mode <= `STACK_MODE_IDLE;
