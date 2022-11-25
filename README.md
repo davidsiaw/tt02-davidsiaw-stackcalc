@@ -15,10 +15,11 @@ It implements the following opcodes
 - 0x3 OUTL - 2 cycles - outl, wait
 - 0x4 OUTH - 2 cycles - outh, wait
 - 0x5 SWAP - 3 cycles - swap, wait, wait
-- 0x6 PUSL - 3 cycles - peek/dupl, wait, wait
+- 0x6 PUSF - 3 cycles - peek/dupl/flag, wait, wait
 - 0x7 REPL - 3 cycles - not/neg, wait, wait
 - 0x8 BINA - 3 cycles - add/and/not/xor, wait, wait
 - 0x9 MULT - 4 cycles - mul, wait, wait, wait
+- 0x9 IDIV - 4 cycles - div, wait, wait, wait
 
 ## Pinouts
 

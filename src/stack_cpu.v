@@ -3,50 +3,6 @@
   `include "constants.v"
 `endif  
 
-module input_selector (
-  input [3:0] a,
-              b,
-              c,
-              d,
-              e,
-              f,
-              g,
-              h,
-  input [2:0] s,
-  output reg [3:0] q
-);
-
-  always @ (*) begin
-    casez(s)
-      3'b000: q = a;
-      3'b001: q = b;
-      3'b010: q = c;
-      3'b011: q = d;
-      3'b100: q = e;
-      3'b101: q = f;
-      3'b110: q = g;
-      3'b111: q = h;
-      default: q = 4'h0;
-    endcase;
-  end
-endmodule
-
-module output_multiplexer (
-  input [7:0] a, b, c, d,
-  input [1:0] output_mode,
-  output reg [7:0] q
-);
-  always @ (*) begin
-    casez(output_mode)
-      2'b00: q = a;
-      2'b01: q = b;
-      2'b10: q = c;
-      2'b11: q = d;
-      default: q = 8'h00;
-    endcase;
-  end
-endmodule
-
 module stack_cpu (
   input wire [7:0] io_in,
   output wire [7:0] io_out
@@ -80,10 +36,16 @@ module stack_cpu (
   );
 
   // stack input selection
-  reg [2:0] input_select;
+  reg [3:0] input_select;
   wire [3:0] user_selected_input;
   wire [3:0] user_selected_input2;
   wire [3:0] user_selected_input3;
+
+  // read-only pseudoregister
+  wire [3:0]status_register;
+  assign status_register = { 1'b0, 1'b0, error_flag, carry_flag };
+
+  // see constants.v SELECT_*
   input_selector stack_input_select(
     .a(inbits),
     .b(v0),
@@ -93,23 +55,45 @@ module stack_cpu (
     .f(user_selected_input2),
     .g(user_selected_input3),
     .h(result_register[7:4]),
+
+    .i(4'h0),
+    .j(4'h0),
+    .k(4'h0),
+    .l(4'h0),
+    .m(4'h0),
+    .n(4'h0),
+    .o(4'h0),
+    .p(4'h0),
+
     .s(input_select),
     .q(stack_input)
   );
 
+  // for PUSF
   input_selector userinput_select1(
     .a(v0),
     .b(v1),
-    .c(4'h0),
+    .c(status_register),
     .d(4'h0),
     .e(4'h0),
     .f(4'h0),
     .g(4'h0),
     .h(4'h0),
-    .s(inbits[2:0]),
+
+    .i(4'h0),
+    .j(4'h0),
+    .k(4'h0),
+    .l(4'h0),
+    .m(4'h0),
+    .n(4'h0),
+    .o(4'h0),
+    .p(4'h0),
+
+    .s(inbits),
     .q(user_selected_input)
   );
 
+  // for REPL
   input_selector userinput_select2(
     .a(~v0),
     .b(-v0),
@@ -119,12 +103,26 @@ module stack_cpu (
     .f(4'h0),
     .g(4'h0),
     .h(4'h0),
-    .s(inbits[2:0]),
+
+    .i(4'h0),
+    .j(4'h0),
+    .k(4'h0),
+    .l(4'h0),
+    .m(4'h0),
+    .n(4'h0),
+    .o(4'h0),
+    .p(4'h0),
+
+    .s(inbits),
     .q(user_selected_input2)
   );
 
+  wire [4:0]integer_sum;
+  assign integer_sum = v0 + v1;
+
+  // FOR BINA
   input_selector userinput_select3(
-    .a(v0 + v1),
+    .a(integer_sum[3:0]),
     .b(v0 & v1),
     .c(v0 | v1),
     .d(v0 ^ v1),
@@ -132,7 +130,17 @@ module stack_cpu (
     .f(4'h0),
     .g(4'h0),
     .h(4'h0),
-    .s(inbits[2:0]),
+
+    .i(4'h0),
+    .j(4'h0),
+    .k(4'h0),
+    .l(4'h0),
+    .m(4'h0),
+    .n(4'h0),
+    .o(4'h0),
+    .p(4'h0),
+
+    .s(inbits),
     .q(user_selected_input3)
   );
 
@@ -143,6 +151,8 @@ module stack_cpu (
 
   // calculation registers
   reg [7:0] result_register;  // for results 8 bits wide
+  reg error_flag;             // error flag
+  reg carry_flag;             // carry flag
 
   always @ (posedge clk) begin
     if (rst == 1) begin
@@ -153,6 +163,9 @@ module stack_cpu (
       op_counter <= 0;
       stack_mode <= `STACK_MODE_RESET;
       input_select <= `SELECT_INPUT_BITS;
+      error_flag <= 0;
+      carry_flag <= 0;
+      result_register <= 0;
     end
     else if (fetch_flag == 1) begin
       // spend one cycle to fetch the next op
@@ -242,13 +255,18 @@ module stack_cpu (
 
       end
       else if (current_op == 4'h8) begin
-        // BIN
+        // BINA
+        // binary operations
 
         if (op_counter == 0) begin
           input_select <= `SELECT_USERINPUT3;
           stack_mode <= `STACK_MODE_ROLL2;
         end
         else begin
+          if (inbits == 0) begin
+            // ADD
+            carry_flag <= integer_sum[4];
+          end
           stack_mode <= `STACK_MODE_IDLE;
           fetch_flag <= 1; // complete
         end
@@ -259,13 +277,13 @@ module stack_cpu (
 
         if (op_counter == 0) begin
           // first cycle, compute and move the high to the stack
-          input_select <= `SELECT_RESULTHIGH;
+          input_select <= `SELECT_RESULT_LOW;
           stack_mode <= `STACK_MODE_ROLL2;
           result_register <= v0 * v1;
         end
         else if (op_counter == 1) begin
           // second cycle, move the low to the stack
-          input_select <= `SELECT_RESULT_LOW;
+          input_select <= `SELECT_RESULTHIGH;
           stack_mode <= `STACK_MODE_PUSH;
         end
         else begin
@@ -273,6 +291,43 @@ module stack_cpu (
           fetch_flag <= 1; // complete
         end
 
+      end
+      else if (current_op == 4'ha) begin
+        // IDIV
+
+        if (op_counter == 0) begin
+          // first cycle, compute and move the high to the stack
+          input_select <= `SELECT_RESULT_LOW;
+          stack_mode <= `STACK_MODE_ROLL2;
+
+          if (v0 == 0) begin
+            // set the error flag on divide by zero
+            error_flag <= 1;
+            result_register <= 0; // refuse to perform
+          end
+          else begin
+            result_register <= { v1 % v0, v1 / v0 };
+          end
+
+        end
+        else if (op_counter == 1) begin
+          // second cycle, move the low to the stack
+          input_select <= `SELECT_RESULTHIGH;
+          stack_mode <= `STACK_MODE_PUSH;
+        end
+        else begin
+          stack_mode <= `STACK_MODE_IDLE;
+          fetch_flag <= 1; // complete
+        end
+
+      end
+      else if (current_op == 4'hb) begin
+        // CLFL
+        // clear flags
+
+        error_flag <= 0;
+        carry_flag <= 0;
+        fetch_flag <= 1; // complete
       end
       else begin
         // all unknown instructions are NOOP
