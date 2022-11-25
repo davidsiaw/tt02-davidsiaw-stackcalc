@@ -32,7 +32,6 @@ async def latch_input(dut, input4):
     await ClockCycles(dut.globclk, 5)
 
     dut.clk.value = 1
-
     dut.io_ins.value = input4
     await ClockCycles(dut.globclk, 5)
 
@@ -53,7 +52,6 @@ async def push_op(dut):
 
     await latch_input(dut, 0x1) # PUSH
     await latch_input(dut, 0x5) # 0x5
-    await wait_one_cycle(dut)
     await latch_input(dut, 0x3) # OUTL
     await wait_one_cycle(dut)
 
@@ -68,10 +66,8 @@ async def push2_op(dut):
 
     await latch_input(dut, 0x1) # PUSH
     await latch_input(dut, 0x5) # 0x5
-    await wait_one_cycle(dut)
     await latch_input(dut, 0x1) # PUSH
     await latch_input(dut, 0x7) # 0x7
-    await wait_one_cycle(dut)
     await latch_input(dut, 0x3) # OUTL
     await wait_one_cycle(dut)
 
@@ -86,12 +82,9 @@ async def pop_op(dut):
 
     await latch_input(dut, 0x1) # PUSH
     await latch_input(dut, 0x5) # 0x5
-    await wait_one_cycle(dut)
     await latch_input(dut, 0x1) # PUSH
     await latch_input(dut, 0x7) # 0x7
-    await wait_one_cycle(dut)
     await latch_input(dut, 0x2) # POP
-    await wait_one_cycle(dut)
     await wait_one_cycle(dut)
     await latch_input(dut, 0x3) # OUTL
     await wait_one_cycle(dut)
@@ -107,7 +100,6 @@ async def outh_op(dut):
     # result available immediately
     await latch_input(dut, 0x1) # PUSH
     await latch_input(dut, 0x5) # 0x5
-    await wait_one_cycle(dut)
     await latch_input(dut, 0x4) # OUTH
     await wait_one_cycle(dut)
 
@@ -121,12 +113,9 @@ async def swap_op1(dut):
 
     await latch_input(dut, 0x1) # PUSH
     await latch_input(dut, 0x5) # 0x5
-    await wait_one_cycle(dut)
     await latch_input(dut, 0x1) # PUSH
     await latch_input(dut, 0x7) # 0x7
-    await wait_one_cycle(dut)
     await latch_input(dut, 0x5) # SWAP
-    await wait_one_cycle(dut)
     await wait_one_cycle(dut)
     await latch_input(dut, 0x3) # OUT
     await wait_one_cycle(dut)
@@ -143,12 +132,9 @@ async def swap_op2(dut):
 
     await latch_input(dut, 0x1) # PUSH
     await latch_input(dut, 0x5) # 0x5
-    await wait_one_cycle(dut)
     await latch_input(dut, 0x1) # PUSH
     await latch_input(dut, 0x7) # 0x7
-    await wait_one_cycle(dut)
     await latch_input(dut, 0x5) # SWAP
-    await wait_one_cycle(dut)
     await wait_one_cycle(dut)
     await latch_input(dut, 0x3) # OUT
     await wait_one_cycle(dut)
@@ -156,7 +142,6 @@ async def swap_op2(dut):
     assert int(dut.io_outs.value) == 0x5
 
     await latch_input(dut, 0x2) # POP
-    await wait_one_cycle(dut)
     await wait_one_cycle(dut)
     await latch_input(dut, 0x3) # OUT
     await wait_one_cycle(dut)
@@ -173,13 +158,10 @@ async def peek_op(dut):
 
     await latch_input(dut, 0x1) # PUSH
     await latch_input(dut, 0x5) # 0x5
-    await wait_one_cycle(dut)
     await latch_input(dut, 0x1) # PUSH
     await latch_input(dut, 0x8) # 0x8
-    await wait_one_cycle(dut)
     await latch_input(dut, 0x6) # PUSF
     await latch_input(dut, 0x1) # PEEK
-    await wait_one_cycle(dut)
     await latch_input(dut, 0x3) # OUT
     await wait_one_cycle(dut)
 
@@ -187,14 +169,12 @@ async def peek_op(dut):
 
     await latch_input(dut, 0x2) # POP
     await wait_one_cycle(dut)
-    await wait_one_cycle(dut)
     await latch_input(dut, 0x3) # OUT
     await wait_one_cycle(dut)
 
     assert int(dut.io_outs.value) == 0x8
 
     await latch_input(dut, 0x2) # POP
-    await wait_one_cycle(dut)
     await wait_one_cycle(dut)
     await latch_input(dut, 0x3) # OUT
     await wait_one_cycle(dut)
@@ -211,13 +191,10 @@ async def dupl_op(dut):
 
     await latch_input(dut, 0x1) # PUSH
     await latch_input(dut, 0x5) # 0x5
-    await wait_one_cycle(dut)
     await latch_input(dut, 0x1) # PUSH
     await latch_input(dut, 0x8) # 0x8
-    await wait_one_cycle(dut)
     await latch_input(dut, 0x6) # PUSF
     await latch_input(dut, 0x0) # DUPL
-    await wait_one_cycle(dut)
     await latch_input(dut, 0x3) # OUT
     await wait_one_cycle(dut)
 
@@ -225,14 +202,12 @@ async def dupl_op(dut):
 
     await latch_input(dut, 0x2) # POP
     await wait_one_cycle(dut)
-    await wait_one_cycle(dut)
     await latch_input(dut, 0x3) # OUT
     await wait_one_cycle(dut)
 
     assert int(dut.io_outs.value) == 0x8
 
     await latch_input(dut, 0x2) # POP
-    await wait_one_cycle(dut)
     await wait_one_cycle(dut)
     await latch_input(dut, 0x3) # OUT
     await wait_one_cycle(dut)
@@ -247,12 +222,10 @@ async def and_op(dut):
     await select_cpu(dut)
     await reset_for_start(dut)
 
-    await latch_input(dut, 0x1)    # PUSH
+    await latch_input(dut, 0x1) # PUSH
     await latch_input(dut, 0b1111)
-    await wait_one_cycle(dut)
     await latch_input(dut, 0x1) # PUSH
     await latch_input(dut, 0b1100)
-    await wait_one_cycle(dut)
     await latch_input(dut, 0x8) # BIN
     await latch_input(dut, 0x1) # ADD
     await wait_one_cycle(dut)
@@ -262,7 +235,6 @@ async def and_op(dut):
     assert int(dut.io_outs.value) == 0b1100
 
     await latch_input(dut, 0x2) # POP
-    await wait_one_cycle(dut)
     await wait_one_cycle(dut)
     await latch_input(dut, 0x3) # OUT
     await wait_one_cycle(dut)
@@ -277,12 +249,10 @@ async def or_op(dut):
     await select_cpu(dut)
     await reset_for_start(dut)
 
-    await latch_input(dut, 0x1)    # PUSH
+    await latch_input(dut, 0x1) # PUSH
     await latch_input(dut, 0b0010)
-    await wait_one_cycle(dut)
     await latch_input(dut, 0x1) # PUSH
     await latch_input(dut, 0b1100)
-    await wait_one_cycle(dut)
     await latch_input(dut, 0x8) # BIN
     await latch_input(dut, 0x2) # OR
     await wait_one_cycle(dut)
@@ -292,7 +262,6 @@ async def or_op(dut):
     assert int(dut.io_outs.value) == 0b1110
 
     await latch_input(dut, 0x2) # POP
-    await wait_one_cycle(dut)
     await wait_one_cycle(dut)
     await latch_input(dut, 0x3) # OUT
     await wait_one_cycle(dut)
@@ -309,10 +278,8 @@ async def add_op(dut):
 
     await latch_input(dut, 0x1) # PUSH
     await latch_input(dut, 0x5) # 0x5
-    await wait_one_cycle(dut)
     await latch_input(dut, 0x1) # PUSH
     await latch_input(dut, 0x8) # 0x8
-    await wait_one_cycle(dut)
     await latch_input(dut, 0x8) # BIN
     await latch_input(dut, 0x0) # ADD
     await wait_one_cycle(dut)
@@ -322,7 +289,6 @@ async def add_op(dut):
     assert int(dut.io_outs.value) == 0xd
 
     await latch_input(dut, 0x2) # POP
-    await wait_one_cycle(dut)
     await wait_one_cycle(dut)
     await latch_input(dut, 0x3) # OUT
     await wait_one_cycle(dut)
@@ -338,20 +304,16 @@ async def not_op(dut):
 
     await latch_input(dut, 0x1)  # PUSH
     await latch_input(dut, 0b1100) # 0x5
-    await wait_one_cycle(dut)
     await latch_input(dut, 0x1) # PUSH
     await latch_input(dut, 0b0110) # 0x8
-    await wait_one_cycle(dut)
     await latch_input(dut, 0x7) # REPL
     await latch_input(dut, 0x0) # NOT of top
-    await wait_one_cycle(dut)
     await latch_input(dut, 0x3) # OUT
     await wait_one_cycle(dut)
 
     assert int(dut.io_outs.value) == 0b1001
 
     await latch_input(dut, 0x2) # POP
-    await wait_one_cycle(dut)
     await wait_one_cycle(dut)
     await latch_input(dut, 0x3) # OUT
     await wait_one_cycle(dut)
@@ -367,12 +329,9 @@ async def mul_op(dut):
 
     await latch_input(dut, 0x1) # PUSH
     await latch_input(dut, 5) # 5
-    await wait_one_cycle(dut)
     await latch_input(dut, 0x1) # PUSH
     await latch_input(dut, 6) # 6
-    await wait_one_cycle(dut)
     await latch_input(dut, 0x9) # MUL
-    await wait_one_cycle(dut)
     await wait_one_cycle(dut)
     await wait_one_cycle(dut)
     await latch_input(dut, 0x4) # OUTH
@@ -381,7 +340,6 @@ async def mul_op(dut):
     assert int(dut.io_outs.value) == 0x10
 
     await latch_input(dut, 0x2) # POP
-    await wait_one_cycle(dut)
     await wait_one_cycle(dut)
     await latch_input(dut, 0x3) # OUTL
     await wait_one_cycle(dut)
@@ -398,10 +356,8 @@ async def xor_op(dut):
 
     await latch_input(dut, 0x1) # PUSH
     await latch_input(dut, 0b1100)
-    await wait_one_cycle(dut)
     await latch_input(dut, 0x1) # PUSH
     await latch_input(dut, 0b0110)
-    await wait_one_cycle(dut)
     await latch_input(dut, 0x8) # BIN
     await latch_input(dut, 0x3) # XOR
     await wait_one_cycle(dut)
@@ -411,7 +367,6 @@ async def xor_op(dut):
     assert int(dut.io_outs.value) == 0b1010
 
     await latch_input(dut, 0x2) # POP
-    await wait_one_cycle(dut)
     await wait_one_cycle(dut)
     await latch_input(dut, 0x3) # OUT
     await wait_one_cycle(dut)
@@ -427,20 +382,16 @@ async def neg_op(dut):
 
     await latch_input(dut, 0x1)  # PUSH
     await latch_input(dut, 0x9) # 9
-    await wait_one_cycle(dut)
     await latch_input(dut, 0x1) # PUSH
     await latch_input(dut, 0b0011) # 3
-    await wait_one_cycle(dut)
     await latch_input(dut, 0x7) # REPL
     await latch_input(dut, 0x1) # NEG
-    await wait_one_cycle(dut)
     await latch_input(dut, 0x3) # OUT
     await wait_one_cycle(dut)
 
     assert int(dut.io_outs.value) == 0b1101
 
     await latch_input(dut, 0x2) # POP
-    await wait_one_cycle(dut)
     await wait_one_cycle(dut)
     await latch_input(dut, 0x3) # OUT
     await wait_one_cycle(dut)
@@ -456,12 +407,9 @@ async def idiv_op(dut):
 
     await latch_input(dut, 0x1) # PUSH
     await latch_input(dut, 7)
-    await wait_one_cycle(dut)
     await latch_input(dut, 0x1) # PUSH
     await latch_input(dut, 2)
-    await wait_one_cycle(dut)
     await latch_input(dut, 0xa) # IDIV
-    await wait_one_cycle(dut)
     await wait_one_cycle(dut)
     await wait_one_cycle(dut)
     await latch_input(dut, 0x3) # OUTL
@@ -470,7 +418,6 @@ async def idiv_op(dut):
     assert int(dut.io_outs.value) == 0x1
 
     await latch_input(dut, 0x2) # POP
-    await wait_one_cycle(dut)
     await wait_one_cycle(dut)
     await latch_input(dut, 0x3) # OUTL
     await wait_one_cycle(dut)
@@ -487,17 +434,13 @@ async def idiv_divbyzero_op(dut):
 
     await latch_input(dut, 0x1) # PUSH
     await latch_input(dut, 1)
-    await wait_one_cycle(dut)
     await latch_input(dut, 0x1) # PUSH
     await latch_input(dut, 0)
-    await wait_one_cycle(dut)
     await latch_input(dut, 0xa) # IDIV
-    await wait_one_cycle(dut)
     await wait_one_cycle(dut)
     await wait_one_cycle(dut)
     await latch_input(dut, 0x6) # PUSF
     await latch_input(dut, 0x2) # FLAG
-    await wait_one_cycle(dut)
     await latch_input(dut, 0x3) # OUT
     await wait_one_cycle(dut)
 
@@ -513,16 +456,13 @@ async def add_carryflag_op(dut):
 
     await latch_input(dut, 0x1) # PUSH
     await latch_input(dut, 0xF) # 0xF
-    await wait_one_cycle(dut)
     await latch_input(dut, 0x1) # PUSH
     await latch_input(dut, 0xF) # 0xF
-    await wait_one_cycle(dut)
     await latch_input(dut, 0x8) # BIN
     await latch_input(dut, 0x0) # ADD
     await wait_one_cycle(dut)
     await latch_input(dut, 0x6) # PUSF
     await latch_input(dut, 0x2) # FLAG
-    await wait_one_cycle(dut)
     await latch_input(dut, 0x3) # OUT
     await wait_one_cycle(dut)
 
