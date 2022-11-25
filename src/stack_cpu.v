@@ -1,6 +1,6 @@
 `ifndef CONSTANTS
-   `define CONSTANTS
-   `include "constants.v"
+  `define CONSTANTS
+  `include "constants.v"
 `endif  
 
 module input_selector (
@@ -82,20 +82,22 @@ module stack_cpu (
   // stack input selection
   reg [2:0] input_select;
   wire [3:0] user_selected_input;
+  wire [3:0] user_selected_input2;
+  wire [3:0] user_selected_input3;
   input_selector stack_input_select(
     .a(inbits),
     .b(v0),
     .c(v1),
     .d(result_register),
     .e(user_selected_input),
-    .f(4'h0),
-    .g(4'h0),
+    .f(user_selected_input2),
+    .g(user_selected_input3),
     .h(4'h0),
     .s(input_select),
     .q(stack_input)
   );
 
-  input_selector userinput_select(
+  input_selector userinput_select1(
     .a(v0),
     .b(v1),
     .c(4'h0),
@@ -106,6 +108,32 @@ module stack_cpu (
     .h(4'h0),
     .s(inbits),
     .q(user_selected_input)
+  );
+
+  input_selector userinput_select2(
+    .a(~v0),
+    .b(4'h0),
+    .c(4'h0),
+    .d(4'h0),
+    .e(4'h0),
+    .f(4'h0),
+    .g(4'h0),
+    .h(4'h0),
+    .s(inbits),
+    .q(user_selected_input2)
+  );
+
+  input_selector userinput_select3(
+    .a(v0 + v1),
+    .b(v0 & v1),
+    .c(v0 | v1),
+    .d(4'h0),
+    .e(4'h0),
+    .f(4'h0),
+    .g(4'h0),
+    .h(4'h0),
+    .s(inbits),
+    .q(user_selected_input3)
   );
 
   // processor state
@@ -191,7 +219,7 @@ module stack_cpu (
         // PUSF
 
         if (op_counter == 0) begin
-          input_select <= `SELECT_STACK_USER;
+          input_select <= `SELECT_USERINPUT1;
           stack_mode <= `STACK_MODE_PUSH;
         end
         else begin
@@ -201,44 +229,25 @@ module stack_cpu (
 
       end
       else if (current_op == 4'h7) begin
-        // UNUSED
+        // REPL
+
+        if (op_counter == 0) begin
+          input_select <= `SELECT_USERINPUT2;
+          stack_mode <= `STACK_MODE_ROLL;
+        end
+        else begin
+          stack_mode <= `STACK_MODE_IDLE;
+          fetch_flag <= 1; // complete
+        end
 
       end
       else if (current_op == 4'h8) begin
-        // AND
+        // BIN
 
         if (op_counter == 0) begin
-          input_select <= `SELECT_CALC_STORE;
+          input_select <= `SELECT_USERINPUT3;
           stack_mode <= `STACK_MODE_ROLL2;
           result_register <= v0 & v1;
-        end
-        else begin
-          stack_mode <= `STACK_MODE_IDLE;
-          fetch_flag <= 1; // complete
-        end
-
-      end
-      else if (current_op == 4'h9) begin
-        // OR
-
-        if (op_counter == 0) begin
-          input_select <= `SELECT_CALC_STORE;
-          stack_mode <= `STACK_MODE_ROLL2;
-          result_register <= v0 | v1;
-        end
-        else begin
-          stack_mode <= `STACK_MODE_IDLE;
-          fetch_flag <= 1; // complete
-        end
-
-      end
-      else if (current_op == 4'ha) begin
-        // ADD
-
-        if (op_counter == 0) begin
-          input_select <= `SELECT_CALC_STORE;
-          stack_mode <= `STACK_MODE_ROLL2;
-          result_register <= v0 + v1;
         end
         else begin
           stack_mode <= `STACK_MODE_IDLE;
