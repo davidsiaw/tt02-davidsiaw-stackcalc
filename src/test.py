@@ -416,3 +416,32 @@ async def xor_op(dut):
     await wait_one_cycle(dut)
 
     assert int(dut.io_outs.value) == 0x0
+
+@cocotb.test()
+async def neg_op(dut):
+
+    dut.testnumber.value = 15
+    await select_cpu(dut)
+    await reset_for_start(dut)
+
+    await latch_input(dut, 0x1)  # PUSH
+    await latch_input(dut, 0x9) # 9
+    await wait_one_cycle(dut)
+    await latch_input(dut, 0x1) # PUSH
+    await latch_input(dut, 0b0011) # 3
+    await wait_one_cycle(dut)
+    await latch_input(dut, 0x7) # REPL
+    await latch_input(dut, 0x1) # NEG
+    await wait_one_cycle(dut)
+    await latch_input(dut, 0x3) # OUT
+    await wait_one_cycle(dut)
+
+    assert int(dut.io_outs.value) == 0b1101
+
+    await latch_input(dut, 0x2) # POP
+    await wait_one_cycle(dut)
+    await wait_one_cycle(dut)
+    await latch_input(dut, 0x3) # OUT
+    await wait_one_cycle(dut)
+
+    assert int(dut.io_outs.value) == 0x9
