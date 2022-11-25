@@ -386,3 +386,33 @@ async def mul_op(dut):
     await wait_one_cycle(dut)
 
     assert int(dut.io_outs.value) == 0x1e
+
+
+@cocotb.test()
+async def xor_op(dut):
+
+    dut.testnumber.value = 14
+    await select_cpu(dut)
+    await reset_for_start(dut)
+
+    await latch_input(dut, 0x1) # PUSH
+    await latch_input(dut, 0b1100)
+    await wait_one_cycle(dut)
+    await latch_input(dut, 0x1) # PUSH
+    await latch_input(dut, 0b0110)
+    await wait_one_cycle(dut)
+    await latch_input(dut, 0x8) # BIN
+    await latch_input(dut, 0x3) # XOR
+    await wait_one_cycle(dut)
+    await latch_input(dut, 0x3) # OUT
+    await wait_one_cycle(dut)
+
+    assert int(dut.io_outs.value) == 0b1010
+
+    await latch_input(dut, 0x2) # POP
+    await wait_one_cycle(dut)
+    await wait_one_cycle(dut)
+    await latch_input(dut, 0x3) # OUT
+    await wait_one_cycle(dut)
+
+    assert int(dut.io_outs.value) == 0x0
