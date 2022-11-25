@@ -176,8 +176,8 @@ async def peek_op(dut):
     await latch_input(dut, 0x1) # PUSH
     await latch_input(dut, 0x8) # 0x8
     await wait_one_cycle(dut)
-    await latch_input(dut, 0x6) # PEEK
-    await latch_input(dut, 0x0)
+    await latch_input(dut, 0x6) # PUSF
+    await latch_input(dut, 0x1) # PEEK
     await wait_one_cycle(dut)
     await latch_input(dut, 0x3) # OUT
     await wait_one_cycle(dut)
@@ -214,8 +214,8 @@ async def dupl_op(dut):
     await latch_input(dut, 0x1) # PUSH
     await latch_input(dut, 0x8) # 0x8
     await wait_one_cycle(dut)
-    await latch_input(dut, 0x7) # DUPL
-    await latch_input(dut, 0x0)
+    await latch_input(dut, 0x6) # PUSF
+    await latch_input(dut, 0x0) # DUPL
     await wait_one_cycle(dut)
     await latch_input(dut, 0x3) # OUT
     await wait_one_cycle(dut)
