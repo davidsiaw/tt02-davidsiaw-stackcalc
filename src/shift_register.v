@@ -1,5 +1,5 @@
 
-module shiftreg #(parameter SIZE=8) (
+module shift_register #(parameter SIZE=8) (
   input d,
   input clk,
   input en,
@@ -14,8 +14,8 @@ module shiftreg #(parameter SIZE=8) (
       else begin
         if (en) begin
           case (dir)
-            1'b0: q <= { q[SIZE-2:0], d };
-            1'b1: q <= { d, q[SIZE-1:1] };
+            1'b1: q <= { q[SIZE-2:0], d };
+            1'b0: q <= { 1'b0, q[SIZE-1:1] };
           endcase
         end
         else begin
