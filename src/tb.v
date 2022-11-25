@@ -41,8 +41,7 @@ module tb (
   wire [3:0]regout2;
   stack_register dut2(
     .clk(clk),
-    .rst(rst),
-    .mode(mode), // 1 push, 0 pop
+    .mode(3'b000), // 1 push, 0 pop
     .in_word(io_ins),
     .top_word(regout1),
     .second_word(regout2)

@@ -53,18 +53,14 @@ module stack_cpu (
   // output latch
   reg [7:0] out_dff;
 
-
   wire [3:0] v0, v1;
-  reg move_flag, dir_flag, swap_flag;
+  reg [2:0] stack_mode;
 
   wire [3:0] stack_input;
   stack_register stack(
-    .clk(clk),
-    .rst(rst),
-    .mode(dir_flag), // 1 push, 0 pop
-    .move(move_flag),
-    .swap(swap_flag),
     .in_word(stack_input),
+    .clk(clk),
+    .mode(stack_mode),
     .top_word(v0),
     .second_word(v1)
   );
@@ -92,14 +88,13 @@ module stack_cpu (
       fetch_flag <= 1;
       current_op <= 0;
       op_counter <= 0;
-      move_flag <= 0;
-      dir_flag <= 0;
-      swap_flag <= 0;
+      stack_mode <= `STACK_MODE_RESET;
       input_select <= 0;
     end
     else if (fetch_flag == 1) begin
       // spend one cycle to fetch the next op
       // and latch it in
+      stack_mode <= `STACK_MODE_IDLE;
       current_op <= inbits;
       op_counter <= 0;
       fetch_flag <= 0;
@@ -113,11 +108,10 @@ module stack_cpu (
 
         if (op_counter == 0) begin
           input_select <= 0;
-          move_flag <= 1;
-          dir_flag <= 1;
+          stack_mode <= `STACK_MODE_PUSH;
         end
         else begin
-          move_flag <= 0;
+          stack_mode <= `STACK_MODE_IDLE;
           fetch_flag <= 1; // complete
         end
         
@@ -126,11 +120,10 @@ module stack_cpu (
         // POP
 
         if (op_counter == 0) begin
-          move_flag <= 1;
-          dir_flag <= 0;
+          stack_mode <= `STACK_MODE_POP;
         end
         else begin
-          move_flag <= 0;
+          stack_mode <= `STACK_MODE_IDLE;
           fetch_flag <= 1; // complete
         end
 
@@ -151,10 +144,10 @@ module stack_cpu (
         // SWAP
 
         if (op_counter == 0) begin
-          swap_flag <= 1;
+          stack_mode <= `STACK_MODE_SWAP;
         end
         else begin
-          swap_flag <= 0;
+          stack_mode <= `STACK_MODE_IDLE;
           fetch_flag <= 1; // complete
         end
 
@@ -164,11 +157,10 @@ module stack_cpu (
 
         if (op_counter == 0) begin
           input_select <= 2;
-          move_flag <= 1;
-          dir_flag <= 1;
+          stack_mode <= `STACK_MODE_PUSH;
         end
         else begin
-          move_flag <= 0;
+          stack_mode <= `STACK_MODE_IDLE;
           fetch_flag <= 1; // complete
         end
 
@@ -178,11 +170,23 @@ module stack_cpu (
 
         if (op_counter == 0) begin
           input_select <= 1;
-          move_flag <= 1;
-          dir_flag <= 1;
+          stack_mode <= `STACK_MODE_PUSH;
         end
         else begin
-          move_flag <= 0;
+          stack_mode <= `STACK_MODE_IDLE;
+          fetch_flag <= 1; // complete
+        end
+
+      end
+      else if (current_op == 4'h8) begin
+        // AND
+
+        if (op_counter == 0) begin
+          input_select <= 1;
+          stack_mode <= `STACK_MODE_PUSH;
+        end
+        else begin
+          stack_mode <= `STACK_MODE_IDLE;
           fetch_flag <= 1; // complete
         end
 
