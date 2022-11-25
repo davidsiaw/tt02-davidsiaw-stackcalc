@@ -15,8 +15,9 @@ It implements the following opcodes
 - 0x3 OUTL - 2 cycles - outl, wait
 - 0x4 OUTH - 2 cycles - outh, wait
 - 0x5 SWAP - 3 cycles - swap, wait, wait
-- 0x6 PEEK - 3 cycles - swap, wait, wait
-- 0x7 DUPL - 3 cycles - swap, wait, wait
+- 0x6 PUSL - 3 cycles - peek/dupl, wait, wait
+- 0x7 REPL - 3 cycles - not, wait, wait
+- 0x8 BINA - 3 cycles - add/and/not, wait, wait
 
 ## Pinouts
 
@@ -29,10 +30,6 @@ OUTPUT0-7 depends on the mode
 
 ## Wishlist
 
-- make peek and dupl a sort of pushf that
-  - lets me have a parameter that says v0 or v1 or output dff?
-  - and an operation to go with it
-  - to save opcode space
 - make pop output to the dff maybe as a param?
 - make longer opcodes for less useful operations
 
