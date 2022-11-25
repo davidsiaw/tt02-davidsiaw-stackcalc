@@ -1,20 +1,38 @@
+`define SELECT_INPUT_BITS 3'b000
+`define SELECT_STACK_TOP0 3'b001
+`define SELECT_STACK_TOP1 3'b010
+`define SELECT_CALC_STORE 3'b011
+`define SELECT_E 3'b100
+`define SELECT_F 3'b101
+`define SELECT_G 3'b110
+`define SELECT_H 3'b111
 
-module word_multiplexer (
-  input [3:0] a, b, c, d,
-  input [1:0] s,
+module input_selector (
+  input [3:0] inputbits,
+              stacktop0,
+              stacktop1,
+              calcstore,
+              e,
+              f,
+              g,
+              h,
+  input [2:0] s,
   output reg [3:0] q
 );
 
   always @ (*) begin
     casez(s)
-      2'b00: q = a;
-      2'b01: q = b;
-      2'b10: q = c;
-      2'b11: q = d;
-      default: q = 3'b000;
+      `SELECT_INPUT_BITS: q = inputbits;
+      `SELECT_STACK_TOP0: q = stacktop0;
+      `SELECT_STACK_TOP1: q = stacktop1;
+      `SELECT_CALC_STORE: q = calcstore;
+      `SELECT_E: q = e;
+      `SELECT_F: q = f;
+      `SELECT_G: q = g;
+      `SELECT_H: q = h;
+      default: q = 4'h0;
     endcase;
   end
-
 endmodule
 
 module output_multiplexer (
@@ -66,12 +84,16 @@ module stack_cpu (
   );
 
   // stack input selection
-  reg [1:0] input_select;
-  word_multiplexer stack_input_select(
-    .a(inbits),
-    .b(v0),
-    .c(v1),
-    .d({ 1'b0, 1'b0, 1'b0, 1'b0 }), // status register
+  reg [2:0] input_select;
+  input_selector stack_input_select(
+    .inputbits(inbits),
+    .stacktop0(v0),
+    .stacktop1(v1),
+    .calcstore(result_register),
+    .e(4'h0),
+    .f(4'h0),
+    .g(4'h0),
+    .h(4'h0),
     .s(input_select),
     .q(stack_input)
   );
@@ -81,6 +103,9 @@ module stack_cpu (
   reg [2:0] op_counter; // cycle # of operation
   reg fetch_flag;       // waiting for operation
 
+  // calculation registers
+  reg [3:0] result_register;  // store result of math operation
+
   always @ (posedge clk) begin
     if (rst == 1) begin
       // reset processor state
@@ -89,7 +114,7 @@ module stack_cpu (
       current_op <= 0;
       op_counter <= 0;
       stack_mode <= `STACK_MODE_RESET;
-      input_select <= 0;
+      input_select <= `SELECT_INPUT_BITS;
     end
     else if (fetch_flag == 1) begin
       // spend one cycle to fetch the next op
@@ -107,7 +132,7 @@ module stack_cpu (
         // PUSH
 
         if (op_counter == 0) begin
-          input_select <= 0;
+          input_select <= `SELECT_INPUT_BITS;
           stack_mode <= `STACK_MODE_PUSH;
         end
         else begin
@@ -156,7 +181,7 @@ module stack_cpu (
         // PEEK
 
         if (op_counter == 0) begin
-          input_select <= 2;
+          input_select <= `SELECT_STACK_TOP1;
           stack_mode <= `STACK_MODE_PUSH;
         end
         else begin
@@ -169,7 +194,7 @@ module stack_cpu (
         // DUP
 
         if (op_counter == 0) begin
-          input_select <= 1;
+          input_select <= `SELECT_STACK_TOP0;
           stack_mode <= `STACK_MODE_PUSH;
         end
         else begin
@@ -182,7 +207,7 @@ module stack_cpu (
         // AND
 
         if (op_counter == 0) begin
-          input_select <= 1;
+          input_select <= `SELECT_CALC_STORE;
           stack_mode <= `STACK_MODE_PUSH;
         end
         else begin
