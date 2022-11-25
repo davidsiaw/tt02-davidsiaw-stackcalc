@@ -11,7 +11,7 @@ async def select_stack_register(dut):
 async def reset_for_start(dut):
     dut._log.info("start")
     clock = Clock(dut.globclk, 1, units="us")
-    cocotb.fork(clock.start())
+    cocotb.start_soon(clock.start())
 
     await ClockCycles(dut.globclk, 1)
     
@@ -40,6 +40,7 @@ async def wait_one_cycle(dut):
     dut.clk.value = 0
     await ClockCycles(dut.globclk, 5)
 
+    dut.io_ins.value = 0
     dut.clk.value = 1
     await ClockCycles(dut.globclk, 5)
 
@@ -374,15 +375,15 @@ async def mul_op(dut):
     await wait_one_cycle(dut)
     await wait_one_cycle(dut)
     await wait_one_cycle(dut)
-    await latch_input(dut, 0x3) # OUTL
+    await latch_input(dut, 0x4) # OUTH
     await wait_one_cycle(dut)
 
-    assert int(dut.io_outs.value) == 0xe
+    assert int(dut.io_outs.value) == 0x10
 
     await latch_input(dut, 0x2) # POP
     await wait_one_cycle(dut)
     await wait_one_cycle(dut)
-    await latch_input(dut, 0x4) # OUTH
+    await latch_input(dut, 0x3) # OUTL
     await wait_one_cycle(dut)
 
     assert int(dut.io_outs.value) == 0x1e
@@ -445,3 +446,84 @@ async def neg_op(dut):
     await wait_one_cycle(dut)
 
     assert int(dut.io_outs.value) == 0x9
+
+@cocotb.test()
+async def idiv_op(dut):
+
+    dut.testnumber.value = 16
+    await select_cpu(dut)
+    await reset_for_start(dut)
+
+    await latch_input(dut, 0x1) # PUSH
+    await latch_input(dut, 7)
+    await wait_one_cycle(dut)
+    await latch_input(dut, 0x1) # PUSH
+    await latch_input(dut, 2)
+    await wait_one_cycle(dut)
+    await latch_input(dut, 0xa) # IDIV
+    await wait_one_cycle(dut)
+    await wait_one_cycle(dut)
+    await wait_one_cycle(dut)
+    await latch_input(dut, 0x3) # OUTL
+    await wait_one_cycle(dut)
+
+    assert int(dut.io_outs.value) == 0x1
+
+    await latch_input(dut, 0x2) # POP
+    await wait_one_cycle(dut)
+    await wait_one_cycle(dut)
+    await latch_input(dut, 0x3) # OUTL
+    await wait_one_cycle(dut)
+
+    assert int(dut.io_outs.value) == 0x3
+
+
+@cocotb.test()
+async def idiv_divbyzero_op(dut):
+
+    dut.testnumber.value = 17
+    await select_cpu(dut)
+    await reset_for_start(dut)
+
+    await latch_input(dut, 0x1) # PUSH
+    await latch_input(dut, 1)
+    await wait_one_cycle(dut)
+    await latch_input(dut, 0x1) # PUSH
+    await latch_input(dut, 0)
+    await wait_one_cycle(dut)
+    await latch_input(dut, 0xa) # IDIV
+    await wait_one_cycle(dut)
+    await wait_one_cycle(dut)
+    await wait_one_cycle(dut)
+    await latch_input(dut, 0x6) # PUSF
+    await latch_input(dut, 0x2) # FLAG
+    await wait_one_cycle(dut)
+    await latch_input(dut, 0x3) # OUT
+    await wait_one_cycle(dut)
+
+    assert int(dut.io_outs.value) == 0x2
+
+
+@cocotb.test()
+async def add_carryflag_op(dut):
+
+    dut.testnumber.value = 11
+    await select_cpu(dut)
+    await reset_for_start(dut)
+
+    await latch_input(dut, 0x1) # PUSH
+    await latch_input(dut, 0xF) # 0xF
+    await wait_one_cycle(dut)
+    await latch_input(dut, 0x1) # PUSH
+    await latch_input(dut, 0xF) # 0xF
+    await wait_one_cycle(dut)
+    await latch_input(dut, 0x8) # BIN
+    await latch_input(dut, 0x0) # ADD
+    await wait_one_cycle(dut)
+    await latch_input(dut, 0x6) # PUSF
+    await latch_input(dut, 0x2) # FLAG
+    await wait_one_cycle(dut)
+    await latch_input(dut, 0x3) # OUT
+    await wait_one_cycle(dut)
+
+    assert int(dut.io_outs.value) == 0x1
