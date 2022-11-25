@@ -18,6 +18,7 @@ It implements the following opcodes
 - 0x6 PUSL - 3 cycles - peek/dupl, wait, wait
 - 0x7 REPL - 3 cycles - not, wait, wait
 - 0x8 BINA - 3 cycles - add/and/not, wait, wait
+- 0x9 MULT - 4 cycles - mul, wait, wait, wait
 
 ## Pinouts
 

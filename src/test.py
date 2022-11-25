@@ -356,3 +356,33 @@ async def not_op(dut):
     await wait_one_cycle(dut)
 
     assert int(dut.io_outs.value) == 0b1100
+
+@cocotb.test()
+async def mul_op(dut):
+
+    dut.testnumber.value = 13
+    await select_cpu(dut)
+    await reset_for_start(dut)
+
+    await latch_input(dut, 0x1) # PUSH
+    await latch_input(dut, 5) # 5
+    await wait_one_cycle(dut)
+    await latch_input(dut, 0x1) # PUSH
+    await latch_input(dut, 6) # 6
+    await wait_one_cycle(dut)
+    await latch_input(dut, 0x9) # MUL
+    await wait_one_cycle(dut)
+    await wait_one_cycle(dut)
+    await wait_one_cycle(dut)
+    await latch_input(dut, 0x3) # OUTL
+    await wait_one_cycle(dut)
+
+    assert int(dut.io_outs.value) == 0xe
+
+    await latch_input(dut, 0x2) # POP
+    await wait_one_cycle(dut)
+    await wait_one_cycle(dut)
+    await latch_input(dut, 0x4) # OUTH
+    await wait_one_cycle(dut)
+
+    assert int(dut.io_outs.value) == 0x1e
