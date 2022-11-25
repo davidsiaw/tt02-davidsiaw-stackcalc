@@ -239,32 +239,91 @@ async def dupl_op(dut):
     assert int(dut.io_outs.value) == 0x5
 
 
-# @cocotb.test()
-# async def and_op(dut):
+@cocotb.test()
+async def and_op(dut):
 
-#     dut.testnumber.value = 9
-#     await select_cpu(dut)
-#     await reset_for_start(dut)
+    dut.testnumber.value = 9
+    await select_cpu(dut)
+    await reset_for_start(dut)
 
-#     await latch_input(dut, 0x1)    # PUSH
-#     await latch_input(dut, 0b1111) # 0x5
-#     await wait_one_cycle(dut)
-#     await latch_input(dut, 0x1) # PUSH
-#     await latch_input(dut, 0b1100) # 0x8
-#     await wait_one_cycle(dut)
-#     await latch_input(dut, 0x8) # AND
-#     await latch_input(dut, 0x0)
-#     await wait_one_cycle(dut)
-#     await latch_input(dut, 0x3) # OUT
-#     await wait_one_cycle(dut)
+    await latch_input(dut, 0x1)    # PUSH
+    await latch_input(dut, 0b1111)
+    await wait_one_cycle(dut)
+    await latch_input(dut, 0x1) # PUSH
+    await latch_input(dut, 0b1100)
+    await wait_one_cycle(dut)
+    await latch_input(dut, 0x8) # AND
+    await latch_input(dut, 0x0)
+    await wait_one_cycle(dut)
+    await latch_input(dut, 0x3) # OUT
+    await wait_one_cycle(dut)
 
-#     assert int(dut.io_outs.value) == 0b1100
+    assert int(dut.io_outs.value) == 0b1100
 
-#     await latch_input(dut, 0x2) # POP
-#     await wait_one_cycle(dut)
-#     await wait_one_cycle(dut)
-#     await latch_input(dut, 0x3) # OUT
-#     await wait_one_cycle(dut)
+    await latch_input(dut, 0x2) # POP
+    await wait_one_cycle(dut)
+    await wait_one_cycle(dut)
+    await latch_input(dut, 0x3) # OUT
+    await wait_one_cycle(dut)
 
-#     assert int(dut.io_outs.value) == 0x0
+    assert int(dut.io_outs.value) == 0x0
 
+
+@cocotb.test()
+async def or_op(dut):
+
+    dut.testnumber.value = 10
+    await select_cpu(dut)
+    await reset_for_start(dut)
+
+    await latch_input(dut, 0x1)    # PUSH
+    await latch_input(dut, 0b0010)
+    await wait_one_cycle(dut)
+    await latch_input(dut, 0x1) # PUSH
+    await latch_input(dut, 0b1100)
+    await wait_one_cycle(dut)
+    await latch_input(dut, 0x9) # OR
+    await latch_input(dut, 0x0)
+    await wait_one_cycle(dut)
+    await latch_input(dut, 0x3) # OUT
+    await wait_one_cycle(dut)
+
+    assert int(dut.io_outs.value) == 0b1110
+
+    await latch_input(dut, 0x2) # POP
+    await wait_one_cycle(dut)
+    await wait_one_cycle(dut)
+    await latch_input(dut, 0x3) # OUT
+    await wait_one_cycle(dut)
+
+    assert int(dut.io_outs.value) == 0x0
+
+
+@cocotb.test()
+async def add_op(dut):
+
+    dut.testnumber.value = 11
+    await select_cpu(dut)
+    await reset_for_start(dut)
+
+    await latch_input(dut, 0x1)  # PUSH
+    await latch_input(dut, 0x5) # 0x5
+    await wait_one_cycle(dut)
+    await latch_input(dut, 0x1) # PUSH
+    await latch_input(dut, 0x8) # 0x8
+    await wait_one_cycle(dut)
+    await latch_input(dut, 0xa) # ADD
+    await latch_input(dut, 0x0)
+    await wait_one_cycle(dut)
+    await latch_input(dut, 0x3) # OUT
+    await wait_one_cycle(dut)
+
+    assert int(dut.io_outs.value) == 0xd
+
+    await latch_input(dut, 0x2) # POP
+    await wait_one_cycle(dut)
+    await wait_one_cycle(dut)
+    await latch_input(dut, 0x3) # OUT
+    await wait_one_cycle(dut)
+
+    assert int(dut.io_outs.value) == 0x0
