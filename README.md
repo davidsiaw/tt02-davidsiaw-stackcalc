@@ -30,9 +30,11 @@ OUTPUT0-7 depends on the mode
 ## Wishlist
 
 - make peek and dupl a sort of pushf that
-  - lets me have a parameter that says v0 or v1
+  - lets me have a parameter that says v0 or v1 or output dff?
   - and an operation to go with it
   - to save opcode space
+- make pop output to the dff maybe as a param?
+- make longer opcodes for less useful operations
 
 # What is Tiny Tapeout?
 
