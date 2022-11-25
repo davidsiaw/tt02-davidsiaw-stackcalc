@@ -24,12 +24,8 @@ async def reset_for_start(dut):
         dut.clk.value = 1
         await ClockCycles(dut.globclk, 5)
 
+    dut.io_ins.value = 0
     dut.rst.value = 0
-    dut.clk.value = 0
-    await ClockCycles(dut.globclk, 5)
-
-    dut.clk.value = 1
-    await ClockCycles(dut.globclk, 5)
 
 async def latch_input(dut, input4):
     dut.clk.value = 0
@@ -57,6 +53,7 @@ async def push_op(dut):
 
     await latch_input(dut, 0x1) # PUSH
     await latch_input(dut, 0x5) # 0x5
+    await wait_one_cycle(dut)
     await latch_input(dut, 0x3) # OUT
     await wait_one_cycle(dut)
 
@@ -70,8 +67,10 @@ async def push2_op(dut):
 
     await latch_input(dut, 0x1) # PUSH
     await latch_input(dut, 0x5) # 0x5
+    await wait_one_cycle(dut)
     await latch_input(dut, 0x1) # PUSH
     await latch_input(dut, 0x7) # 0x7
+    await wait_one_cycle(dut)
     await latch_input(dut, 0x3) # OUT
     await wait_one_cycle(dut)
 
@@ -86,10 +85,15 @@ async def pop_op(dut):
     # result available immediately
     await latch_input(dut, 0x1) # PUSH
     await latch_input(dut, 0x5) # 0x5
+    await wait_one_cycle(dut)
     await latch_input(dut, 0x1) # PUSH
     await latch_input(dut, 0x7) # 0x7
+    await wait_one_cycle(dut)
     await latch_input(dut, 0x2) # POP
+    await wait_one_cycle(dut)
+    await wait_one_cycle(dut)
     await latch_input(dut, 0x3) # OUT
+    await wait_one_cycle(dut)
 
     assert int(dut.io_outs.value) == 0x5
 
