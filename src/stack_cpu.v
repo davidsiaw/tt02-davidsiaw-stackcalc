@@ -123,7 +123,10 @@ module stack_cpu (
   assign integer_sum_c = v0 + v1 + carry_flag;
 
   wire [7:0]mul_result = v0 * v1;
-  wire [7:0]div_result = { v1 % v0, v1 / v0 };
+
+  wire [3:0]div_result = v0 == 0 ? 0 : v1 / v0;
+  wire [2:0]mod_result = v0 == 0 ? 0 : v1 % v0;
+  wire div_by_zero = v0 == 0 ? 1 : 0;
 
   // for BINA
   input_selector userinput_select3(
@@ -137,8 +140,8 @@ module stack_cpu (
     .h(4'h0),
 
     .i(4'h0),
-    .j(div_result[3:0]),      // div
-    .k(div_result[7:4]),      // mod
+    .j(div_result),                  // div
+    .k({div_by_zero, mod_result}),   // mod
     .l(4'h0),
     .m(4'h0),
     .n(4'h0),
@@ -154,10 +157,16 @@ module stack_cpu (
   reg [2:0] op_counter; // cycle # of operation
   reg fetch_flag;       // waiting for operation
 
+  reg [3:0] prev_inbits;  // only negedge
+
   // calculation registers
   reg [7:0] result_register;  // for results 8 bits wide
   reg error_flag;             // error flag
   reg carry_flag;             // carry flag
+
+  always @ (negedge clk) begin
+    prev_inbits <= inbits;
+  end
 
   always @ (posedge clk) begin
     if (rst == 1) begin
@@ -268,14 +277,18 @@ module stack_cpu (
           stack_mode <= `STACK_MODE_ROLL2;
         end
         else begin
-          if (inbits == 0) begin
+          if (prev_inbits == 0) begin
             // ADD
             carry_flag <= integer_sum[4];
           end
-          if (inbits == 4) begin
-            // ADD
+          if (prev_inbits == 4) begin
+            // ADDC
             carry_flag <= integer_sum_c[4];
           end
+          if (prev_inbits == 9 || prev_inbits == 10) begin
+            error_flag <= div_by_zero;
+          end
+
           stack_mode <= `STACK_MODE_IDLE;
           fetch_flag <= 1; // complete
         end

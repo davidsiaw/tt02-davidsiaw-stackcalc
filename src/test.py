@@ -45,6 +45,7 @@ async def wait_one_cycle(dut):
     await ClockCycles(dut.globclk, 5)
 
 
+
 @cocotb.test()
 async def push_op(dut):
     dut.testnumber.value = 1
@@ -656,6 +657,8 @@ async def addwithcarry_op(dut):
     await select_cpu(dut)
     await reset_for_start(dut)
 
+    await latch_input(dut, 0xb) # CLFL
+    await wait_one_cycle(dut)
     await latch_input(dut, 0x1) # PUSH
     await latch_input(dut, 0xF)
     await wait_one_cycle(dut)
@@ -678,4 +681,71 @@ async def addwithcarry_op(dut):
     await wait_one_cycle(dut)
 
     assert int(dut.io_outs.value) == 0xf
+
+
+
+@cocotb.test()
+async def divzero_op(dut):
+
+    dut.testnumber.value = 24
+    await select_cpu(dut)
+    await reset_for_start(dut)
+
+    await latch_input(dut, 0xb) # CLFL
+    await latch_input(dut, 2)
+    await latch_input(dut, 0x1) # PUSH
+    await latch_input(dut, 2)
+    await wait_one_cycle(dut)
+    await latch_input(dut, 0x1) # PUSH
+    await latch_input(dut, 2)
+    await wait_one_cycle(dut)
+    # divide by zero
+    await latch_input(dut, 0x1) # PUSH
+    await latch_input(dut, 9)
+    await wait_one_cycle(dut)
+    await latch_input(dut, 0x1) # PUSH
+    await latch_input(dut, 0)
+    await wait_one_cycle(dut)
+    await latch_input(dut, 0x8) # BIN
+    await latch_input(dut, 0x9) # DIV
+    await wait_one_cycle(dut)
+    await latch_input(dut, 0x3) # OUTL
+    await wait_one_cycle(dut)
+
+    assert int(dut.io_outs.value) == 0x0
+
+    await latch_input(dut, 0x6) # PUSF
+    await latch_input(dut, 0x2) # FLAG
+    await wait_one_cycle(dut)
+    await latch_input(dut, 0x3) # OUTL
+    await wait_one_cycle(dut)
+
+    assert int(dut.io_outs.value) == 0x2
+
+
+@cocotb.test()
+async def add_carryflag2_op(dut):
+
+    dut.testnumber.value = 25
+    await select_cpu(dut)
+    await reset_for_start(dut)
+
+    await latch_input(dut, 0xb) # CLFL
+    await wait_one_cycle(dut)
+    await latch_input(dut, 0x1) # PUSH
+    await latch_input(dut, 0xF) # 0xF
+    await wait_one_cycle(dut)
+    await latch_input(dut, 0x1) # PUSH
+    await latch_input(dut, 0xF) # 0xF
+    await wait_one_cycle(dut)
+    await latch_input(dut, 0x8) # BIN
+    await latch_input(dut, 0x4) # ADDC
+    await wait_one_cycle(dut)
+    await latch_input(dut, 0x6) # PUSF
+    await latch_input(dut, 0x2) # FLAG
+    await wait_one_cycle(dut)
+    await latch_input(dut, 0x3) # OUT
+    await wait_one_cycle(dut)
+
+    assert int(dut.io_outs.value) == 0x1
 
