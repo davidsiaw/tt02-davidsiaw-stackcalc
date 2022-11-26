@@ -187,27 +187,16 @@ module stack_cpu (
       if (current_op == 4'h1) begin
         // PUSH
 
-        if (op_counter == 0) begin
-          input_select <= `SELECT_INPUT_BITS;
-          stack_mode <= `STACK_MODE_PUSH;
-        end
-        else begin
-          stack_mode <= `STACK_MODE_IDLE;
-          fetch_flag <= 1; // complete
-        end
+        input_select <= `SELECT_INPUT_BITS;
+        stack_mode <= `STACK_MODE_PUSH;
+        fetch_flag <= 1; // complete
         
       end
       else if (current_op == 4'h2) begin
         // POP
 
-        if (op_counter == 0) begin
-          stack_mode <= `STACK_MODE_POP;
-        end
-        else begin
-          stack_mode <= `STACK_MODE_IDLE;
-          fetch_flag <= 1; // complete
-        end
-
+        stack_mode <= `STACK_MODE_POP;
+        fetch_flag <= 1; // complete
       end
       else if (current_op == 4'h3) begin
         // OUTL
@@ -224,39 +213,24 @@ module stack_cpu (
       else if (current_op == 4'h5) begin
         // SWAP
 
-        if (op_counter == 0) begin
-          stack_mode <= `STACK_MODE_SWAP;
-        end
-        else begin
-          stack_mode <= `STACK_MODE_IDLE;
-          fetch_flag <= 1; // complete
-        end
+        stack_mode <= `STACK_MODE_SWAP;
+        fetch_flag <= 1; // complete
 
       end
       else if (current_op == 4'h6) begin
         // PUSF
 
-        if (op_counter == 0) begin
-          input_select <= `SELECT_USERINPUT1;
-          stack_mode <= `STACK_MODE_PUSH;
-        end
-        else begin
-          stack_mode <= `STACK_MODE_IDLE;
-          fetch_flag <= 1; // complete
-        end
+        input_select <= `SELECT_USERINPUT1;
+        stack_mode <= `STACK_MODE_PUSH;
+        fetch_flag <= 1; // complete
 
       end
       else if (current_op == 4'h7) begin
         // REPL
 
-        if (op_counter == 0) begin
-          input_select <= `SELECT_USERINPUT2;
-          stack_mode <= `STACK_MODE_ROLL;
-        end
-        else begin
-          stack_mode <= `STACK_MODE_IDLE;
-          fetch_flag <= 1; // complete
-        end
+        input_select <= `SELECT_USERINPUT2;
+        stack_mode <= `STACK_MODE_ROLL;
+        fetch_flag <= 1; // complete
 
       end
       else if (current_op == 4'h8) begin
@@ -294,9 +268,6 @@ module stack_cpu (
           // second cycle, move the low to the stack
           input_select <= `SELECT_RESULTHIGH;
           stack_mode <= `STACK_MODE_PUSH;
-        end
-        else begin
-          stack_mode <= `STACK_MODE_IDLE;
           fetch_flag <= 1; // complete
         end
 
@@ -323,12 +294,8 @@ module stack_cpu (
           // second cycle, move the low to the stack
           input_select <= `SELECT_RESULTHIGH;
           stack_mode <= `STACK_MODE_PUSH;
-        end
-        else begin
-          stack_mode <= `STACK_MODE_IDLE;
           fetch_flag <= 1; // complete
         end
-
       end
       else if (current_op == 4'hb) begin
         // CLFL

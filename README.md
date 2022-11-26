@@ -10,16 +10,16 @@ doc still in progress
 
 It implements the following opcodes
 
-- 0x1 PUSH - 3 cycles - push, value, wait
-- 0x2 POP  - 3 cycles - pop, wait, wait
+- 0x1 PUSH - 2 cycles - push, value
+- 0x2 POP  - 2 cycles - pop, wait
 - 0x3 OUTL - 2 cycles - outl, wait
 - 0x4 OUTH - 2 cycles - outh, wait
-- 0x5 SWAP - 3 cycles - swap, wait, wait
-- 0x6 PUSF - 3 cycles - peek/dupl/flag, wait, wait
-- 0x7 REPL - 3 cycles - not/neg, wait, wait
+- 0x5 SWAP - 2 cycles - swap, wait
+- 0x6 PUSF - 2 cycles - peek/dupl/flag, wait
+- 0x7 REPL - 2 cycles - not/neg, wait
 - 0x8 BINA - 3 cycles - add/and/not/xor, wait, wait
-- 0x9 MULT - 4 cycles - mul, wait, wait, wait
-- 0x9 IDIV - 4 cycles - div, wait, wait, wait
+- 0x9 MULT - 3 cycles - mul, wait, wait
+- 0xA IDIV - 3 cycles - div, wait, wait
 
 ## Pinouts
 
