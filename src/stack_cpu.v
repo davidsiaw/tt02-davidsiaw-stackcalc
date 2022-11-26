@@ -119,14 +119,20 @@ module stack_cpu (
 
   wire [4:0]integer_sum;
   wire [4:0]integer_sum_c;
+
+  wire [7:0]mul_result;
+  wire [3:0]div_result;
+  wire [2:0]mod_result;
+  wire div_by_zero;
+
   assign integer_sum = v0 + v1;
   assign integer_sum_c = v0 + v1 + carry_flag;
 
-  wire [7:0]mul_result = v0 * v1;
+  assign mul_result = v0 * v1;
+  assign div_result = v0 == 0 ? 0 : v1 / v0;
+  assign mod_result = v0 == 0 ? 0 : v1 % v0;
+  assign div_by_zero = v0 == 0 ? 1 : 0;
 
-  wire [3:0]div_result = v0 == 0 ? 0 : v1 / v0;
-  wire [2:0]mod_result = v0 == 0 ? 0 : v1 % v0;
-  wire div_by_zero = v0 == 0 ? 1 : 0;
 
   // for BINA
   input_selector userinput_select3(
@@ -157,18 +163,21 @@ module stack_cpu (
   reg [2:0] op_counter; // cycle # of operation
   reg fetch_flag;       // waiting for operation
 
-  reg [3:0] prev_inbits;  // only negedge
+  reg [3:0] prev_inbits;
 
   // calculation registers
   reg [7:0] result_register;  // for results 8 bits wide
   reg error_flag;             // error flag
   reg carry_flag;             // carry flag
 
-  always @ (negedge clk) begin
+  wire nclk;
+  assign nclk = ~clk;
+  always @ (posedge nclk) begin
     prev_inbits <= inbits;
   end
 
   always @ (posedge clk) begin
+
     if (rst == 1) begin
       // reset processor state
       out_dff <= 0;
@@ -277,6 +286,7 @@ module stack_cpu (
           stack_mode <= `STACK_MODE_ROLL2;
         end
         else begin
+
           if (prev_inbits == 0) begin
             // ADD
             carry_flag <= integer_sum[4];
