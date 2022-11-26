@@ -141,7 +141,6 @@ module stack_cpu (
   );
 
   always @ (posedge clk) begin
-
     if (rst == 1) begin
       // reset processor state
       out_dff <= 0;

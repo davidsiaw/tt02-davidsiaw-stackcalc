@@ -1,5 +1,5 @@
 `define STACK_SIZE 8
-`define MEMORY_ADDR_BITS 4
+`define MEMORY_ADDR_BITS 3
 
 `define STACK_MODE_IDLE  3'b000
 `define STACK_MODE_PUSH  3'b001
