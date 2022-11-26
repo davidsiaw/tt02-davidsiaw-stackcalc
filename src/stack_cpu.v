@@ -283,9 +283,6 @@ module stack_cpu (
             // ADDC
             carry_flag <= integer_sum_c[4];
           end
-          if (inbits == 9 || inbits == 10) begin
-            error_flag <= div_by_zero;
-          end
 
           stack_mode <= `STACK_MODE_IDLE;
           fetch_flag <= 1; // complete
