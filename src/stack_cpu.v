@@ -121,18 +121,13 @@ module stack_cpu (
   wire [4:0]integer_sum_c;
 
   wire [7:0]mul_result;
-  wire [3:0]div_result;
   wire [2:0]mod_result;
-  wire div_by_zero;
 
   assign integer_sum = v0 + v1;
   assign integer_sum_c = v0 + v1 + carry_flag;
 
   assign mul_result = v0 * v1;
-  assign div_result = v0 == 0 ? 0 : v1 / v0;
   assign mod_result = v0 == 0 ? 0 : v1 % v0;
-  assign div_by_zero = v0 == 0 ? 1 : 0;
-
 
   // for BINA
   input_selector userinput_select3(
@@ -146,8 +141,8 @@ module stack_cpu (
     .h(4'h0),
 
     .i(4'h0),
-    .j(4'h0 /* div_result */),                  // div
-    .k(4'h0 /* {div_by_zero, mod_result}*/ ),   // mod
+    .j(4'h0),
+    .k(4'h0),
     .l(4'h0),
     .m(4'h0),
     .n(4'h0),

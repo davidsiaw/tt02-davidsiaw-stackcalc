@@ -590,66 +590,6 @@ async def mul_high_op(dut):
     assert int(dut.io_outs.value) == 0x0
 
 
-# @cocotb.test()
-# async def div_op(dut):
-
-#     dut.testnumber.value = 21
-#     await select_cpu(dut)
-#     await reset_for_start(dut)
-
-#     await latch_input(dut, 0x1) # PUSH
-#     await latch_input(dut, 9)
-#     await wait_one_cycle(dut)
-#     await latch_input(dut, 0x1) # PUSH
-#     await latch_input(dut, 4)
-#     await wait_one_cycle(dut)
-#     await latch_input(dut, 0x8) # BIN
-#     await latch_input(dut, 0x9) # DIV
-#     await wait_one_cycle(dut)
-#     await latch_input(dut, 0x3) # OUTL
-#     await wait_one_cycle(dut)
-
-#     assert int(dut.io_outs.value) == 0x2
-
-#     await latch_input(dut, 0x2) # POP
-#     await wait_one_cycle(dut)
-#     await wait_one_cycle(dut)
-#     await latch_input(dut, 0x3) # OUTL
-#     await wait_one_cycle(dut)
-
-#     assert int(dut.io_outs.value) == 0x0
-
-
-# @cocotb.test()
-# async def mod_op(dut):
-
-#     dut.testnumber.value = 22
-#     await select_cpu(dut)
-#     await reset_for_start(dut)
-
-#     await latch_input(dut, 0x1) # PUSH
-#     await latch_input(dut, 9)
-#     await wait_one_cycle(dut)
-#     await latch_input(dut, 0x1) # PUSH
-#     await latch_input(dut, 2)
-#     await wait_one_cycle(dut)
-#     await latch_input(dut, 0x8) # BIN
-#     await latch_input(dut, 0xa) # MOD
-#     await wait_one_cycle(dut)
-#     await latch_input(dut, 0x3) # OUTL
-#     await wait_one_cycle(dut)
-
-#     assert int(dut.io_outs.value) == 0x1
-
-#     await latch_input(dut, 0x2) # POP
-#     await wait_one_cycle(dut)
-#     await wait_one_cycle(dut)
-#     await latch_input(dut, 0x3) # OUTL
-#     await wait_one_cycle(dut)
-
-#     assert int(dut.io_outs.value) == 0x0
-
-
 @cocotb.test()
 async def addwithcarry_op(dut):
 
