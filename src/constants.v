@@ -1,4 +1,4 @@
-`define STACK_SIZE 16
+`define STACK_SIZE 8
 
 `define STACK_MODE_IDLE  3'b000
 `define STACK_MODE_PUSH  3'b001
