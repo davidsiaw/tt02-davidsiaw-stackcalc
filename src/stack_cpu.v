@@ -146,8 +146,8 @@ module stack_cpu (
     .h(4'h0),
 
     .i(4'h0),
-    .j(div_result),                  // div
-    .k({div_by_zero, mod_result}),   // mod
+    .j(4'h0 /* div_result */),                  // div
+    .k(4'h0 /* {div_by_zero, mod_result}*/ ),   // mod
     .l(4'h0),
     .m(4'h0),
     .n(4'h0),
