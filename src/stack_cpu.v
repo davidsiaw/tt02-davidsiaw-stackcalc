@@ -163,18 +163,11 @@ module stack_cpu (
   reg [2:0] op_counter; // cycle # of operation
   reg fetch_flag;       // waiting for operation
 
-  reg [3:0] prev_inbits;
-
   // calculation registers
   reg [7:0] result_register;  // for results 8 bits wide
   reg error_flag;             // error flag
   reg carry_flag;             // carry flag
 
-  wire nclk;
-  assign nclk = ~clk;
-  always @ (posedge nclk) begin
-    prev_inbits <= inbits;
-  end
 
   always @ (posedge clk) begin
 
@@ -287,15 +280,15 @@ module stack_cpu (
         end
         else begin
 
-          if (prev_inbits == 0) begin
+          if (inbits == 0) begin
             // ADD
             carry_flag <= integer_sum[4];
           end
-          if (prev_inbits == 4) begin
+          if (inbits == 4) begin
             // ADDC
             carry_flag <= integer_sum_c[4];
           end
-          if (prev_inbits == 9 || prev_inbits == 10) begin
+          if (inbits == 9 || inbits == 10) begin
             error_flag <= div_by_zero;
           end
 
