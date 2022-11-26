@@ -95,16 +95,16 @@ module stack_cpu (
 
   // for REPL
   input_selector userinput_select2(
-    .a(~v0),                      // not
-    .b(-v0),                      // neg
-    .c(v0+1),                     // incr
-    .d(v0-1),                     // decr
-    .e(v0>>1),                    // shr1
-    .f(v0<<1),                    // shl1
-    .g({v[0], v[3:1]}),           // ror1
-    .h({v[2:0], v[3]}),           // rol1
+    .a(~v0),                          // not
+    .b(-v0),                          // neg
+    .c(v0+4'h1),                      // incr
+    .d(v0-4'h1),                      // decr
+    .e(v0>>4'h1),                     // shr1
+    .f(v0<<4'h1),                     // shl1
+    .g({v0[0], v0[3:1]}),             // ror1
+    .h({v0[2:0], v0[3]}),             // rol1
 
-    .i({v[0], v[1], v[2], v[3]}), // flip
+    .i({v0[0], v0[1], v0[2], v0[3]}), // flip
     .j(4'h0),
     .k(4'h0),
     .l(4'h0),
@@ -268,9 +268,13 @@ module stack_cpu (
           stack_mode <= `STACK_MODE_ROLL2;
         end
         else begin
-          if (inbits == 0 || inbits == 4) begin
+          if (inbits == 0) begin
             // ADD
             carry_flag <= integer_sum[4];
+          end
+          if (inbits == 4) begin
+            // ADD
+            carry_flag <= integer_sum_c[4];
           end
           stack_mode <= `STACK_MODE_IDLE;
           fetch_flag <= 1; // complete
