@@ -478,10 +478,8 @@ async def mul_low_op(dut):
 
     await latch_input(dut, 0x1) # PUSH
     await latch_input(dut, 5) # 5
-    await wait_one_cycle(dut)
     await latch_input(dut, 0x1) # PUSH
     await latch_input(dut, 6) # 6
-    await wait_one_cycle(dut)
     await latch_input(dut, 0x8) # BIN
     await latch_input(dut, 0x5) # MULL
     await wait_one_cycle(dut)
@@ -491,7 +489,6 @@ async def mul_low_op(dut):
     assert int(dut.io_outs.value) == 0xe
 
     await latch_input(dut, 0x2) # POP
-    await wait_one_cycle(dut)
     await wait_one_cycle(dut)
     await latch_input(dut, 0x3) # OUTL
     await wait_one_cycle(dut)
@@ -508,10 +505,8 @@ async def mul_high_op(dut):
 
     await latch_input(dut, 0x1) # PUSH
     await latch_input(dut, 5) # 5
-    await wait_one_cycle(dut)
     await latch_input(dut, 0x1) # PUSH
     await latch_input(dut, 6) # 6
-    await wait_one_cycle(dut)
     await latch_input(dut, 0x8) # BIN
     await latch_input(dut, 0x6) # MULH
     await wait_one_cycle(dut)
@@ -521,7 +516,6 @@ async def mul_high_op(dut):
     assert int(dut.io_outs.value) == 0x1
 
     await latch_input(dut, 0x2) # POP
-    await wait_one_cycle(dut)
     await wait_one_cycle(dut)
     await latch_input(dut, 0x3) # OUTL
     await wait_one_cycle(dut)
@@ -538,10 +532,8 @@ async def div_op(dut):
 
     await latch_input(dut, 0x1) # PUSH
     await latch_input(dut, 9)
-    await wait_one_cycle(dut)
     await latch_input(dut, 0x1) # PUSH
     await latch_input(dut, 4)
-    await wait_one_cycle(dut)
     await latch_input(dut, 0x8) # BIN
     await latch_input(dut, 0x9) # DIV
     await wait_one_cycle(dut)
@@ -551,7 +543,6 @@ async def div_op(dut):
     assert int(dut.io_outs.value) == 0x2
 
     await latch_input(dut, 0x2) # POP
-    await wait_one_cycle(dut)
     await wait_one_cycle(dut)
     await latch_input(dut, 0x3) # OUTL
     await wait_one_cycle(dut)
@@ -568,10 +559,8 @@ async def mod_op(dut):
 
     await latch_input(dut, 0x1) # PUSH
     await latch_input(dut, 9)
-    await wait_one_cycle(dut)
     await latch_input(dut, 0x1) # PUSH
     await latch_input(dut, 2)
-    await wait_one_cycle(dut)
     await latch_input(dut, 0x8) # BIN
     await latch_input(dut, 0xa) # MOD
     await wait_one_cycle(dut)
@@ -581,7 +570,6 @@ async def mod_op(dut):
     assert int(dut.io_outs.value) == 0x1
 
     await latch_input(dut, 0x2) # POP
-    await wait_one_cycle(dut)
     await wait_one_cycle(dut)
     await latch_input(dut, 0x3) # OUTL
     await wait_one_cycle(dut)
