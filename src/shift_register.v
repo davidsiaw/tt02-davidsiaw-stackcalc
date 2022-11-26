@@ -20,6 +20,8 @@ module shift_register #(parameter SIZE=8) (
       `STACK_MODE_ROLL2: q <= { 1'b0, q[SIZE-1:2], d }; // remove top two, put input at top
       `STACK_MODE_ROLL : q <= { q[SIZE-1:1], d };       // replace top with input
 
+      `STACK_MODE_POP2 : q <= { 2'b00, q[SIZE-1:2] };   // pop top two
+
       `STACK_MODE_RESET: q <= 0;
 
       default: q <= q;

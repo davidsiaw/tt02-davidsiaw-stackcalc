@@ -20,6 +20,8 @@ It implements the following opcodes
 - 0x8 BINA - 3 cycles - add/and/not/xor/addc/mull/mulh, wait, wait
 - 0x9 MULT - 4 cycles - mult, wait, wait, wait
 - 0x9 IDIV - 4 cycles - idiv, wait, wait, wait
+- 0x9 SAVE - 4 cycles - save, wait, wait, wait
+- 0x9 LOAD - 4 cycles - load, wait, wait, wait
 
 ## Pinouts
 

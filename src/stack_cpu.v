@@ -3,6 +3,40 @@
   `include "constants.v"
 `endif  
 
+`define MEMORY_ADDR_BITS 3
+
+`define MEMORY_MODE_NONE  2'b00
+`define MEMORY_MODE_READ  2'b01
+`define MEMORY_MODE_WRITE 2'b10
+`define MEMORY_MODE_CLEAR 2'b11
+
+module memory (
+  input clk,
+  input [1:0] mode,
+  input [`MEMORY_ADDR_BITS-1:0] address,
+  input [3:0] data_in,
+  output reg [3:0] data_out);
+
+  generate
+    genvar i;
+    for(i = 0; i < 2**`MEMORY_ADDR_BITS; i = i + 1) begin
+      reg [3:0] memory_cell;
+
+      always @ (posedge clk) begin
+        if (address == i) begin
+          case(mode)
+            `MEMORY_MODE_NONE:  data_out <= data_out;
+            `MEMORY_MODE_READ:  data_out <= memory_cell;
+            `MEMORY_MODE_WRITE: memory_cell <= data_in;
+            `MEMORY_MODE_CLEAR: data_out <= 0;
+            default: data_out <= data_out;
+          endcase;
+        end
+      end
+    end
+  endgenerate
+endmodule
+
 module stack_cpu (
   input wire [7:0] io_in,
   output wire [7:0] io_out
@@ -56,7 +90,7 @@ module stack_cpu (
     .g(user_selected_input3),
     .h(result_register[7:4]),
 
-    .i(4'h0),
+    .i(ram_out),
     .j(4'h0),
     .k(4'h0),
     .l(4'h0),
@@ -71,9 +105,9 @@ module stack_cpu (
 
   // for PUSF
   input_selector userinput_select1(
-    .a(v0),
-    .b(v1),
-    .c(status_register),
+    .a(v0),               // dupl
+    .b(v1),               // peek
+    .c(status_register),  // flag
     .d(4'h0),
     .e(4'h0),
     .f(4'h0),
@@ -158,11 +192,23 @@ module stack_cpu (
   reg [2:0] op_counter; // cycle # of operation
   reg fetch_flag;       // waiting for operation
 
-
   // calculation registers
   reg [7:0] result_register;  // for results 8 bits wide
   reg error_flag;             // error flag
   reg carry_flag;             // carry flag
+
+  // RAM
+  reg [1:0]ram_mode;
+  reg [`MEMORY_ADDR_BITS-1:0]ram_addr;
+  wire [3:0]ram_out;
+
+  memory ram(
+    .clk(clk),
+    .mode(ram_mode),
+    .address(ram_addr),
+    .data_in(v1),
+    .data_out(ram_out)
+  );
 
   always @ (posedge clk) begin
 
@@ -177,6 +223,8 @@ module stack_cpu (
       error_flag <= 0;
       carry_flag <= 0;
       result_register <= 0;
+      ram_mode <= `MEMORY_MODE_NONE;
+      ram_addr <= 0;
     end
     else if (fetch_flag == 1) begin
       // spend one cycle to fetch the next op
@@ -185,6 +233,7 @@ module stack_cpu (
       current_op <= inbits;
       op_counter <= 0;
       fetch_flag <= 0;
+      ram_mode <= `MEMORY_MODE_NONE;
     end
     else begin
       op_counter <= op_counter + 1;
@@ -346,6 +395,42 @@ module stack_cpu (
         carry_flag <= 0;
         fetch_flag <= 1; // complete
       end
+      else if (current_op == 4'hc) begin
+        // SAVE
+
+        if (op_counter == 0) begin
+          ram_addr <= v0;
+          ram_mode <= `MEMORY_MODE_WRITE;
+          stack_mode <= `STACK_MODE_POP;
+        end
+        else if (op_counter == 1) begin
+          ram_mode <= `MEMORY_MODE_NONE;
+          stack_mode <= `STACK_MODE_ROLL;
+          input_select <= `STACK_MODE_POP;
+        end
+        else begin
+          stack_mode <= `STACK_MODE_IDLE;
+          fetch_flag <= 1; // complete
+        end
+      end
+      else if (current_op == 4'hd) begin
+        // LOAD
+
+        if (op_counter == 0) begin
+          ram_addr <= v0;
+          ram_mode <= `MEMORY_MODE_READ;
+        end
+        else if (op_counter == 1) begin
+          ram_mode <= `MEMORY_MODE_NONE;
+          stack_mode <= `STACK_MODE_ROLL;
+          input_select <= `SELECT_MEMORY_OUT;
+        end
+        else begin
+          stack_mode <= `STACK_MODE_IDLE;
+          fetch_flag <= 1; // complete
+        end
+      end
+
       else begin
         // all unknown instructions are NOOP
         // NOOP

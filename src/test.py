@@ -623,45 +623,6 @@ async def addwithcarry_op(dut):
     assert int(dut.io_outs.value) == 0xf
 
 
-# @cocotb.test()
-# async def divzero_op(dut):
-
-#     dut.testnumber.value = 24
-#     await select_cpu(dut)
-#     await reset_for_start(dut)
-
-#     await latch_input(dut, 0xb) # CLFL
-#     await latch_input(dut, 2)
-#     await latch_input(dut, 0x1) # PUSH
-#     await latch_input(dut, 2)
-#     await wait_one_cycle(dut)
-#     await latch_input(dut, 0x1) # PUSH
-#     await latch_input(dut, 2)
-#     await wait_one_cycle(dut)
-#     # divide by zero
-#     await latch_input(dut, 0x1) # PUSH
-#     await latch_input(dut, 9)
-#     await wait_one_cycle(dut)
-#     await latch_input(dut, 0x1) # PUSH
-#     await latch_input(dut, 0)
-#     await wait_one_cycle(dut)
-#     await latch_input(dut, 0x8) # BIN
-#     await latch_input(dut, 0x9) # DIV
-#     await wait_one_cycle(dut)
-#     await latch_input(dut, 0x3) # OUTL
-#     await wait_one_cycle(dut)
-
-#     assert int(dut.io_outs.value) == 0x0
-
-#     await latch_input(dut, 0x6) # PUSF
-#     await latch_input(dut, 0x2) # FLAG
-#     await wait_one_cycle(dut)
-#     await latch_input(dut, 0x3) # OUTL
-#     await wait_one_cycle(dut)
-
-#     assert int(dut.io_outs.value) == 0x2
-
-
 
 @cocotb.test()
 async def add_carryflag2_op(dut):
@@ -688,4 +649,34 @@ async def add_carryflag2_op(dut):
     await wait_one_cycle(dut)
 
     assert int(dut.io_outs.value) == 0x1
+
+
+@cocotb.test()
+async def save_load_op(dut):
+
+    dut.testnumber.value = 26
+    await select_cpu(dut)
+    await reset_for_start(dut)
+
+    await latch_input(dut, 0x1) # PUSH data
+    await latch_input(dut, 0x5)
+    await wait_one_cycle(dut)
+    await latch_input(dut, 0x1) # PUSH addr
+    await latch_input(dut, 0x4)
+    await wait_one_cycle(dut)
+    await latch_input(dut, 0xc) # SAVE
+    await wait_one_cycle(dut)
+    await wait_one_cycle(dut)
+    await wait_one_cycle(dut)
+    await latch_input(dut, 0x1) # PUSH addr
+    await latch_input(dut, 0x4)
+    await wait_one_cycle(dut)
+    await latch_input(dut, 0xd) # LOAD
+    await wait_one_cycle(dut)
+    await wait_one_cycle(dut)
+    await wait_one_cycle(dut)
+    await latch_input(dut, 0x3) # OUTL
+    await wait_one_cycle(dut)
+
+    assert int(dut.io_outs.value) == 0x5
 
