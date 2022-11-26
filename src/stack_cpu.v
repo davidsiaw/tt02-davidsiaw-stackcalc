@@ -378,22 +378,3 @@ module stack_cpu (
   );
 
 endmodule
-
-// ADD ADDC
-// SUB SUBC
-// AND
-// OR
-// XOR
-
-// SHR
-// SHL
-// ROL
-// ROR
-
-// NOT
-// INC
-// DEC
-
-
-// CMP
-// EX extended opcodes
