@@ -36,7 +36,7 @@ module stack_cpu (
   );
 
   // stack input selection
-  reg [3:0] input_select;
+  reg [2:0] input_select;
   wire [3:0] user_selected_input;
   wire [3:0] user_selected_input2;
   wire [3:0] user_selected_input3;
@@ -54,16 +54,7 @@ module stack_cpu (
     .e(user_selected_input),
     .f(user_selected_input2),
     .g(user_selected_input3),
-    .h(result_register[7:4]),
-
-    .i(ram_out),
-    .j(4'h0),
-    .k(4'h0),
-    .l(4'h0),
-    .m(4'h0),
-    .n(4'h0),
-    .o(4'h0),
-    .p(4'h0),
+    .h(ram_out),
 
     .s(input_select),
     .q(stack_input)
@@ -80,16 +71,7 @@ module stack_cpu (
     .g(4'h0),
     .h(4'h0),
 
-    .i(4'h0),
-    .j(4'h0),
-    .k(4'h0),
-    .l(4'h0),
-    .m(4'h0),
-    .n(4'h0),
-    .o(4'h0),
-    .p(4'h0),
-
-    .s(inbits),
+    .s(inbits[2:0]),
     .q(user_selected_input)
   );
 
@@ -104,16 +86,7 @@ module stack_cpu (
     .g({v0[0], v0[3:1]}),             // ror1
     .h({v0[2:0], v0[3]}),             // rol1
 
-    .i({v0[0], v0[1], v0[2], v0[3]}), // flip
-    .j(4'h0),
-    .k(4'h0),
-    .l(4'h0),
-    .m(4'h0),
-    .n(4'h0),
-    .o(4'h0),
-    .p(4'h0),
-
-    .s(inbits),
+    .s(inbits[2:0]),
     .q(user_selected_input2)
   );
 
@@ -140,16 +113,7 @@ module stack_cpu (
     .g(mul_result[7:4]),      // mulh
     .h(4'h0),
 
-    .i(4'h0),
-    .j(4'h0),
-    .k(4'h0),
-    .l(4'h0),
-    .m(4'h0),
-    .n(4'h0),
-    .o(4'h0),
-    .p(4'h0),
-
-    .s(inbits),
+    .s(inbits[2:0]),
     .q(user_selected_input3)
   );
 
@@ -308,14 +272,14 @@ module stack_cpu (
         // MULT
 
         if (op_counter == 0) begin
-          // first cycle, compute and move the high to the stack
+          // first cycle, compute and move the low to the stack
           input_select <= `SELECT_RESULT_LOW;
           stack_mode <= `STACK_MODE_ROLL2;
           result_register <= v0 * v1;
         end
         else if (op_counter == 1) begin
-          // second cycle, move the low to the stack
-          input_select <= `SELECT_RESULTHIGH;
+          // second cycle, move the high to the stack
+          result_register <= { 4'b0000, result_register[7:4] };
           stack_mode <= `STACK_MODE_PUSH;
         end
         else begin
@@ -343,8 +307,8 @@ module stack_cpu (
 
         end
         else if (op_counter == 1) begin
-          // second cycle, move the low to the stack
-          input_select <= `SELECT_RESULTHIGH;
+          // second cycle, move the mod to the stack
+          result_register <= { 4'b0000, result_register[7:4] };
           stack_mode <= `STACK_MODE_PUSH;
         end
         else begin
@@ -388,7 +352,7 @@ module stack_cpu (
         end
         else if (op_counter == 1) begin
           ram_mode <= `MEMORY_MODE_NONE;
-          stack_mode <= `STACK_MODE_ROLL;
+          stack_mode <= `STACK_MODE_PUSH;
           input_select <= `SELECT_MEMORY_OUT;
         end
         else begin
