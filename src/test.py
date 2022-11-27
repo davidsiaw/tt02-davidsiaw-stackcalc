@@ -29,11 +29,12 @@ async def reset_for_start(dut):
 
 async def latch_input(dut, input4):
     dut.clk.value = 0
-    await ClockCycles(dut.globclk, 5)
-
-    dut.clk.value = 1
+    await ClockCycles(dut.globclk, 4)
 
     dut.io_ins.value = input4
+    await ClockCycles(dut.globclk, 1)
+
+    dut.clk.value = 1
     await ClockCycles(dut.globclk, 5)
 
 async def wait_one_cycle(dut):
