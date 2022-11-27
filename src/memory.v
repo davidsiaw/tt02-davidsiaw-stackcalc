@@ -20,6 +20,15 @@ module memory (
   reg [3:0] memory_cell6;
   reg [3:0] memory_cell7;
 
+  reg [3:0] memory_cell8;
+  reg [3:0] memory_cell9;
+  reg [3:0] memory_cella;
+  reg [3:0] memory_cellb;
+  reg [3:0] memory_cellc;
+  reg [3:0] memory_celld;
+  reg [3:0] memory_celle;
+  reg [3:0] memory_cellf;
+
   always @ (posedge clk) begin
     if (mode == `MEMORY_MODE_CLEAR) begin
       memory_cell0 <= 0;
@@ -30,30 +39,57 @@ module memory (
       memory_cell5 <= 0;
       memory_cell6 <= 0;
       memory_cell7 <= 0;
+
+      memory_cell8 <= 0;
+      memory_cell9 <= 0;
+      memory_cella <= 0;
+      memory_cellb <= 0;
+      memory_cellc <= 0;
+      memory_celld <= 0;
+      memory_celle <= 0;
+      memory_cellf <= 0;
       data_out <= 0;
     end
     else if (mode == `MEMORY_MODE_READ) begin
       case(address)
-        3'b000: data_out <= memory_cell0;
-        3'b001: data_out <= memory_cell1;
-        3'b010: data_out <= memory_cell2;
-        3'b011: data_out <= memory_cell3;
-        3'b100: data_out <= memory_cell4;
-        3'b101: data_out <= memory_cell5;
-        3'b110: data_out <= memory_cell6;
-        3'b111: data_out <= memory_cell7;
+        4'b0000: data_out <= memory_cell0;
+        4'b0001: data_out <= memory_cell1;
+        4'b0010: data_out <= memory_cell2;
+        4'b0011: data_out <= memory_cell3;
+        4'b0100: data_out <= memory_cell4;
+        4'b0101: data_out <= memory_cell5;
+        4'b0110: data_out <= memory_cell6;
+        4'b0111: data_out <= memory_cell7;
+
+        4'b1000: data_out <= memory_cell8;
+        4'b1001: data_out <= memory_cell9;
+        4'b1010: data_out <= memory_cella;
+        4'b1011: data_out <= memory_cellb;
+        4'b1100: data_out <= memory_cellc;
+        4'b1101: data_out <= memory_celld;
+        4'b1110: data_out <= memory_celle;
+        4'b1111: data_out <= memory_cellf;
       endcase;
     end
     else if (mode == `MEMORY_MODE_WRITE) begin
       case(address)
-        3'b000: memory_cell0 <= data_in;
-        3'b001: memory_cell1 <= data_in;
-        3'b010: memory_cell2 <= data_in;
-        3'b011: memory_cell3 <= data_in;
-        3'b100: memory_cell4 <= data_in;
-        3'b101: memory_cell5 <= data_in;
-        3'b110: memory_cell6 <= data_in;
-        3'b111: memory_cell7 <= data_in;
+        4'b0000: memory_cell0 <= data_in;
+        4'b0001: memory_cell1 <= data_in;
+        4'b0010: memory_cell2 <= data_in;
+        4'b0011: memory_cell3 <= data_in;
+        4'b0100: memory_cell4 <= data_in;
+        4'b0101: memory_cell5 <= data_in;
+        4'b0110: memory_cell6 <= data_in;
+        4'b0111: memory_cell7 <= data_in;
+
+        4'b1000: memory_cell8 <= data_in;
+        4'b1001: memory_cell9 <= data_in;
+        4'b1010: memory_cella <= data_in;
+        4'b1011: memory_cellb <= data_in;
+        4'b1100: memory_cellc <= data_in;
+        4'b1101: memory_celld <= data_in;
+        4'b1110: memory_celle <= data_in;
+        4'b1111: memory_cellf <= data_in;
       endcase;
     end
     else begin
