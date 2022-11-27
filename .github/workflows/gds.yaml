@@ -61,7 +61,7 @@ jobs:
     # extract gatelevel verilog
     - name: extract gate-level verilog
       run: |
-        cp `runs/wokwi/results/final/verilog/gl/*.v` runs/gatelevel.v
+        cp `find runs/wokwi/results/final/verilog/gl/*.v` runs/gatelevel.v
 
     # send up gatelevel verilog
     - uses: actions/upload-artifact@v3
