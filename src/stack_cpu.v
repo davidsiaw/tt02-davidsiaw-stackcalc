@@ -152,7 +152,7 @@ module stack_cpu (
       error_flag <= 0;
       carry_flag <= 0;
       result_register <= 0;
-      ram_mode <= `MEMORY_MODE_NONE;
+      ram_mode <= `MEMORY_MODE_CLEAR;
       ram_addr <= 0;
     end
     else if (fetch_flag == 1) begin

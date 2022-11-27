@@ -31,23 +31,11 @@ module tb (
   wire [7:0] outputs;
 
   // dut 0x1 is cpu
-  stack_cpu dut1(
+  davidsiaw_stackcalc dut1(
     .io_in  (inputs),
     .io_out (outputs)
   );
 
-  // dut 0x2 is stack register alone
-  wire [3:0]regout1;
-  wire [3:0]regout2;
-  stack_register dut2(
-    .clk(clk),
-    .mode(3'b000), // 1 push, 0 pop
-    .in_word(io_ins),
-    .top_word(regout1),
-    .second_word(regout2)
-  );
-
-  assign io_outs = {8{select[0]}} & outputs |
-                   {4{select[1]}} & regout1;
+  assign io_outs = outputs;
 
 endmodule

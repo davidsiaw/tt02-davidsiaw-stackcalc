@@ -58,6 +58,17 @@ jobs:
     - name: show files
       run: find runs/wokwi/
 
+    # extract gatelevel verilog
+    - name: extract gate-level verilog
+      run: |
+        cp `runs/wokwi/results/final/verilog/gl/*.v` runs/gatelevel.v
+
+    # send up gatelevel verilog
+    - uses: actions/upload-artifact@v3
+      with:
+        name: gatelevel.v
+        path: runs/gatelevel.v
+
     # print some routing stats
     - name: add summary
       run: ./configure.py --get-stats >> $GITHUB_STEP_SUMMARY
