@@ -30,12 +30,14 @@ module tb (
   wire [7:0] inputs = {1'b0, 1'b0, io_ins, rst, clk};
   wire [7:0] outputs;
 
-  // dut 0x1 is cpu
   davidsiaw_stackcalc dut1(
+`ifdef GL_TEST
+    .vccd1(1'b1),
+    .vssd1(1'b0),
+`endif
     .io_in  (inputs),
     .io_out (outputs)
   );
 
   assign io_outs = outputs;
-
 endmodule

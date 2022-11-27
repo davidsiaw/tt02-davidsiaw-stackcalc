@@ -5,3 +5,4 @@
 src/__pycache__/
 src/results.xml
 src/sim_build/
+src/gatelevel.v.bb

@@ -91,6 +91,24 @@ jobs:
         path: runs
         key: ${{ runner.os }}-runs-${{ github.run_id }}
 
+  gatelevel:
+    needs: gds
+    runs-on: ubuntu-latest
+    container:
+      image: davidsiaw/ocs
+      env:
+        GATES: yes
+    steps:
+    - name: checkout repo
+      uses: actions/checkout@v3
+    - uses: actions/download-artifact@v3
+      with:
+        name: gatelevel.v
+        path: src/gatelevel.v.bb
+    - name: run gate level test
+      run: |
+        cd src
+        make
   png:
     needs: gds
     runs-on: ubuntu-latest
