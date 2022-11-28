@@ -109,6 +109,9 @@ jobs:
     - name: run gate level test
       run: |
         cd src
+        ls
+        ls src/gatelevel.v.bb
+        head -10 gatelevel.v.bb
         make
   png:
     needs: gds
