@@ -105,13 +105,12 @@ jobs:
     - uses: actions/download-artifact@v3
       with:
         name: gatelevel.v
-        path: src/gatelevel.v.bb
+        path: src/gatelevel-src
     - name: run gate level test
       run: |
         cd src
         ls
-        ls gatelevel.v.bb
-        head -10 gatelevel.v.bb
+        cp gatelevel-src/gatelevel.v gatelevel.v.bb
         make
   png:
     needs: gds
