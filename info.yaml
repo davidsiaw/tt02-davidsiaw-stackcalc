@@ -20,18 +20,121 @@ project:
 #
 # This info will be automatically collected and used to make a datasheet for the chip.
 documentation: 
-  author:       "David Siaw"      # Your name
-  discord:      "astrobunny#7777"      # Your discord handle
-  title:        "Stack Calculator"      # Project title
-  description:  "a stack based calculator"      # Short description of what your project does
-  how_it_works: "TODO"      # Longer description of how the project works
-  how_to_test:  "TODO"      # Instructions on how someone could test your project, include things like what buttons do what and how to set the clock if needed
-  external_hw:  ""      # Describe any external hardware needed
-  language:     "wokwi" # other examples include Verilog, Amaranth, VHDL, etc
-  doc_link:     ""      # URL to longer form documentation, eg the README.md in your repository
-  clock_hz:     0       # Clock frequency in Hz (if required) we are expecting max clock frequency to be ~6khz. Provided on input 0.
-  picture:      ""      # relative path to a picture in your repository
-  inputs:               # a description of what the inputs do
+  author:       "David Siaw"                    # Your name
+  discord:      "astrobunny#7777"               # Your discord handle
+  title:        "Stack Calculator"              # Project title
+  description:  A stack based 4-bit calculator featuring a 4-bit wide 8 entry deep stack and 64 bits of random access memory.
+  how_it_works: |                               # Longer description of how the project works
+    The stack calculator is a 4-bit calculator. It is meant to be used in a
+    larger circuit that will handle timing and memory. It is not a processor
+    since it does not contain a program counter or attempt to access memory
+    on its own. Rather, it accepts inputs in particular sequences and gives
+    outputs depending on the instructions provided.
+
+    The stack calculator consists of a 4-bit wide stack that is 8 entries deep.
+    The thing that makes it a stack calculator is the fact that all operations
+    are performed against this stack. The user will provide opcodes at every
+    upwards tick of the clock cycle to instruct the machine on what to do next.
+
+    The stack calculator can also save 16 4-bit values using the `SAVE` and `LOAD`
+    operations.
+
+    All opcodes are 4 bits long. Some opcodes accept one additional input that
+    define the operation. Ops take at least 2 cycles to complete and at most
+    4 cycles.
+
+    All input must be provided in a particular order and in the following timing:
+
+    CLK `___/----\___/----\___/----\___/----\___/----\___/----\___/----\___/----\`
+
+    OP2 `_X OPC X OPER X______ `
+
+    OP3 `_X OPC X OPER X____________ `
+
+    OP4 `_X OPC X OPER X______________________ `
+
+    The stack machine also features an output register that can be written to using the
+    `OUTL` and `OUTH` operations.
+
+    RESET PIN - Please hold the reset pin high and tick the clock at least 4 cycles to
+    reset the machine.
+
+    MODE PINS - The input pins 6 and 7 are the mode pin. They can be used to set the output
+    pins to output specific things depending on their value:
+
+    - 00 - show contents of the output register
+    - 01 - show 7-segment display of the top of the stack
+    - 10 - show 7-segment display of the value just beneath the top of the stack
+    - 11 - show the top 2 values on the stack on the low and high nibbles respectively.
+
+    The list opcodes are as follows:
+
+    - 0x1 PUSH
+      - Pushes a value to the stack. The value must be provided in the following cycle.
+      - 3 cycles - push, value, wait
+    - 0x2 POP
+      - Pops a value from the stack. The value must be provided in the following cycle.
+      - 3 cycles - pop, wait, wait
+    - 0x3 OUTL
+      - Copies the value on the top of the stack to the lower 4 bits of the output register.
+      - 2 cycles - outl, wait
+    - 0x4 OUTH
+      - Copies the value on the top of the stack to the high 4 bits of the output register.
+      - 2 cycles - outh, wait
+    - 0x5 SWAP
+      - Swaps the top two values on the stack.
+      - 3 cycles - swap, wait, wait
+    - 0x6 PUSF
+      - Push a value on the stack depending on the operand. The operand determines the values pushed on the stack.
+      - 3 cycles - peek/dupl/flag, wait, wait
+        - 0x0 DUPL - pushes a copy of the value on the top of the stack to the top of the stack
+        - 0x1 PEEK - pushes a copy of the value below the top of the stack to the top of the stack
+        - 0x2 FLAG - pushes the contents of the status register
+    - 0x7 REPL
+      - Removes the value at the top of the stack and pushes the value modified by an unary operation
+      - 3 cycles - not/neg/incr/decr/shr1/shr2/ror1/rol1, wait, wait
+        - 0x0 NOT  - bitwise NOT
+        - 0x1 NEG  - negative, or 2's complement
+        - 0x2 INCR - increment
+        - 0x3 DECR - decrement
+        - 0x4 SHR1 - shift right by 1
+        - 0x5 SHL1 - shift left by 1
+        - 0x6 ROR1 - rotate right by 1
+        - 0x7 ROL1 - rotate left by 1
+    - 0x8 BINA
+      - Binary operation - removes the top two values of the stack and pushes the result of a binary operation
+      - 3 cycles - add/and/not/xor/addc/mull/mulh, wait, wait
+        - 0x0 ADD  - add (will set the status register carry flag if result > 15)
+        - 0x1 AND  - bitwise AND
+        - 0x2 NOT  - bitwise NOT
+        - 0x3 XOR  - bitwise XOR
+        - 0x4 ADDC - add with carry. same as add but +1 if carry flag is set
+        - 0x5 MULL - low nibble from result of multiplication
+        - 0x6 MULH - high nibble from result of multiplication
+    - 0x9 MULT
+      - Full multiply of the top two nibbles on the stack. Pushes the high nibble and then the low nibble to the stack in that order.
+      - 4 cycles - mult, wait, wait, wait
+    - 0xA IDIV
+      - Divide the value below the top of the stack by the value on the top of the stack. Pushes the remainder and the integer division result in order.
+      - 4 cycles - idiv, wait, wait, wait
+    - 0xB CLFL
+      - Unset all flags in flag register
+      - 4 cycles - clfl, wait
+    - 0xC SAVE
+      - Writes the value below the top of the stack to the address provided at the top of the stack.
+      - 4 cycles - save, wait, wait, wait
+    - 0xD LOAD
+      - Loads the value at the address provided at the top of the stack.
+      - 4 cycles - load, wait, wait, wait
+
+  how_to_test: |                                # Instructions on how someone could test your project, include things like what buttons do what and how to set the clock if needed
+    "TODO"      
+  external_hw:  ""                              # Describe any external hardware needed
+  language:     "verilog"                       # other examples include Verilog, Amaranth, VHDL, etc
+  doc_link:     ""                              # URL to longer form documentation, eg the README.md in your repository
+  clock_hz:     1000                            # Clock frequency in Hz (if required)
+  picture:      ""                              # relative path to a picture in your repository
+  inputs:                                       # a description of what the inputs do
     - clk
     - rst
     - input0
@@ -41,12 +144,12 @@ documentation:
     - mode0
     - mode1               
   outputs:
-    - out0                # all 8 pins of the output are decided by what the mode inputs are set to
-    - out1                # if they are set to
-    - out2                # 0 then they are set to the 8-bit output dff
-    - out3                # 1 then they are set to 7-segment output of the top of the stack
-    - out4
-    - out5
-    - out6
-    - out7
+    - output0
+    - output1
+    - output2
+    - output3
+    - output4
+    - output5
+    - output6
+    - output7
 

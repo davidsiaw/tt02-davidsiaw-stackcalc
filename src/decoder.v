@@ -26,11 +26,11 @@ module decoder (
 
             4'h4:  segments = 7'b1100110;
             4'h5:  segments = 7'b1101101;
-            4'h6:  segments = 7'b1111100;
+            4'h6:  segments = 7'b1111101;
             4'h7:  segments = 7'b0000111;
 
             4'h8:  segments = 7'b1111111;
-            4'h9:  segments = 7'b1100111;
+            4'h9:  segments = 7'b1101111;
 
             4'hA:  segments = 7'b1110111;
             4'hb:  segments = 7'b1111100;

@@ -2,7 +2,7 @@
 
 # David's Stack Calculator
 
-This TinyTapeout submission is a 4-bit stack machine.
+This TinyTapeout submission is a 4-bit stack calculator.
 
 doc still in progress
 
@@ -16,7 +16,7 @@ It implements the following opcodes
 - 0x4 OUTH - 2 cycles - outh, wait
 - 0x5 SWAP - 3 cycles - swap, wait, wait
 - 0x6 PUSF - 3 cycles - peek/dupl/flag, wait, wait
-- 0x7 REPL - 3 cycles - not/neg/incr/decr/shr1/shr2/ror1/rol1/flip, wait, wait
+- 0x7 REPL - 3 cycles - not/neg/incr/decr/shr1/shl1/ror1/rol1/flip, wait, wait
 - 0x8 BINA - 3 cycles - add/and/not/xor/addc/mull/mulh, wait, wait
 - 0x9 MULT - 4 cycles - mult, wait, wait, wait
 - 0x9 IDIV - 4 cycles - idiv, wait, wait, wait

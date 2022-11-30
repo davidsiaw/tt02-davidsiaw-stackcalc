@@ -94,13 +94,11 @@ module stack_cpu (
   wire [4:0]integer_sum_c;
 
   wire [7:0]mul_result;
-  wire [2:0]mod_result;
 
   assign integer_sum = v0 + v1;
   assign integer_sum_c = v0 + v1 + carry_flag;
 
   assign mul_result = v0 * v1;
-  assign mod_result = v0 == 0 ? 0 : v1 % v0;
 
   // for BINA
   input_selector userinput_select3(
@@ -370,20 +368,26 @@ module stack_cpu (
     end
   end
 
-  wire [6:0]sevenseg;
+  wire [6:0]sevenseg0;
+  wire [6:0]sevenseg1;
 
   decoder seven_seg_decoder(
     .binary(v0),
-    .segments(sevenseg)
+    .segments(sevenseg0)
+  );
+
+  decoder seven_seg_decoder1(
+    .binary(v1),
+    .segments(sevenseg1)
   );
 
   output_multiplexer outputter(
     .a(out_dff),
-    .b({ 1'b0, sevenseg }),
-    .c(8'hff),
-    .d(8'hff),
+    .b({ 1'b0, sevenseg0 }),
+    .c({ 1'b0, sevenseg1 }),
+    .d({ v1, v0 }),
     .output_mode(output_mode),
     .q(io_out)
   );
-
+  
 endmodule
