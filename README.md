@@ -4,7 +4,14 @@
 
 This TinyTapeout submission is a 4-bit stack calculator.
 
-doc still in progress
+## Pinouts
+
+INPUT0 clock (c)
+INPUT1 reset (let the clock tick a few times while reset is high)
+INPUT2-5 Inputs (opcodes and input go here)
+INPUT6-7 output mode
+
+OUTPUT0-7 depends on the mode
 
 ## Opcodes
 
@@ -16,26 +23,32 @@ It implements the following opcodes
 - 0x4 OUTH - 2 cycles - outh, wait
 - 0x5 SWAP - 3 cycles - swap, wait, wait
 - 0x6 PUSF - 3 cycles - peek/dupl/flag, wait, wait
-- 0x7 REPL - 3 cycles - not/neg/incr/decr/shr1/shl1/ror1/rol1/flip, wait, wait
+- 0x7 REPL - 3 cycles - not/neg/incr/decr/shr1/shl1/ror1/rol1, wait, wait
 - 0x8 BINA - 3 cycles - add/and/not/xor/addc/mull/mulh, wait, wait
 - 0x9 MULT - 4 cycles - mult, wait, wait, wait
-- 0x9 IDIV - 4 cycles - idiv, wait, wait, wait
-- 0x9 SAVE - 4 cycles - save, wait, wait, wait
-- 0x9 LOAD - 4 cycles - load, wait, wait, wait
+- 0xA IDIV - 4 cycles - idiv, wait, wait, wait
+- 0xB CLFL - 2 cycles - clfl, wait, wait, wait
+- 0xC SAVE - 4 cycles - save, wait, wait, wait
+- 0xD LOAD - 4 cycles - load, wait, wait, wait
 
-## Pinouts
+## Output Modes
+- 0x0 output register
+- 0x1 top of stack as 7segment
+- 0x2 below top of stack as 7segment
+- 0x3 top two values on the stack, top of stack is low nibble and below is high nibble
 
-INPUT0 clock (c)
-INPUT1 reset (let the clock tick a few times while reset is high)
-INPUT2-5 Inputs (opcodes and input go here)
-INPUT6-7 debug (0 - output dff contents, 1 - stack top 7-segment hex, 2 - tbd, 3 - tbd)
+## Testing
 
-OUTPUT0-7 depends on the mode
+You can test the design yourself if you do not have the ASIC using an FPGA.
+Currently I only test on a cheap GOWIN FGPA, the Tang Nano 9k.
 
-## Wishlist
+You will need docker installed.
 
-- make pop output to the dff maybe as a param?
-- make longer opcodes for less useful operations
+`make gowin`
+
+If you already have the Tang Nano 9k connected and can use `openFPGALoader`, you can go
+
+`make upload_gowin`
 
 # What is Tiny Tapeout?
 

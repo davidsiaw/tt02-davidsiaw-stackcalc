@@ -371,7 +371,7 @@ module stack_cpu (
   wire [6:0]sevenseg0;
   wire [6:0]sevenseg1;
 
-  decoder seven_seg_decoder(
+  decoder seven_seg_decoder0(
     .binary(v0),
     .segments(sevenseg0)
   );
@@ -389,5 +389,5 @@ module stack_cpu (
     .output_mode(output_mode),
     .q(io_out)
   );
-  
+
 endmodule

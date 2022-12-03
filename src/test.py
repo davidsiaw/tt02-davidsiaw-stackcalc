@@ -17,6 +17,7 @@ async def reset_for_start(dut):
     
     dut._log.info("reset")
     dut.rst.value = 1
+    dut.mode.value = 0
 
     for n in range(3):
         dut.clk.value = 0
@@ -46,6 +47,34 @@ async def wait_one_cycle(dut):
     await ClockCycles(dut.globclk, 5)
 
 
+@cocotb.test()
+async def push_op0(dut):
+    dut.testnumber.value = 0xbb
+    await select_cpu(dut)
+    await reset_for_start(dut)
+    dut.mode.value = 1
+
+    await latch_input(dut, 0x1) # PUSH
+    await latch_input(dut, 0x5) # 0x5
+    await wait_one_cycle(dut)
+
+    assert int(dut.io_outs.value) == 0b01101101
+
+@cocotb.test()
+async def push_op1(dut):
+    dut.testnumber.value = 0xbc
+    await select_cpu(dut)
+    await reset_for_start(dut)
+    dut.mode.value = 2
+
+    await latch_input(dut, 0x1) # PUSH
+    await latch_input(dut, 0x4) # 0x4
+    await wait_one_cycle(dut)
+    await latch_input(dut, 0x1) # PUSH
+    await latch_input(dut, 0x5) # 0x5
+    await wait_one_cycle(dut)
+
+    assert int(dut.io_outs.value) == 0b01100110
 
 @cocotb.test()
 async def push_op(dut):

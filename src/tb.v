@@ -14,7 +14,7 @@ module tb (
   input [31:0] testnumber,
   input [31:0] select,
   input [3:0] io_ins,
-  input mode,
+  input [1:0] mode,
   output [7:0] io_outs,
   output [3:0] io_outs2
    );
@@ -27,7 +27,7 @@ module tb (
   end
 
   // wire up the inputs and outputs
-  wire [7:0] inputs = {1'b0, 1'b0, io_ins, rst, clk};
+  wire [7:0] inputs = {mode, io_ins, rst, clk};
   wire [7:0] outputs;
 
   davidsiaw_stackcalc dut1(
