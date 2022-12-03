@@ -1,0 +1,20 @@
+//Part Number: GW1NR-LV9QN88PC6/I5
+
+// pin numbers for the LEDs
+IO_LOC "io_in[0]" 41;	// clk GCLKT4
+IO_LOC "io_in[1]" 51;	// rst
+IO_LOC "io_in[2]" 25;
+IO_LOC "io_in[3]" 26;
+IO_LOC "io_in[4]" 27;
+IO_LOC "io_in[5]" 28;
+IO_LOC "io_in[6]" 29;
+IO_LOC "io_in[7]" 33;
+
+IO_LOC "io_out[0]" 77;
+IO_LOC "io_out[1]" 76;
+IO_LOC "io_out[2]" 75;
+IO_LOC "io_out[3]" 74;
+IO_LOC "io_out[4]" 73;
+IO_LOC "io_out[5]" 72;
+IO_LOC "io_out[6]" 71;
+IO_LOC "io_out[7]" 70;
