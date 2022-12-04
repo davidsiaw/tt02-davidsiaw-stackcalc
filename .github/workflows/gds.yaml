@@ -228,6 +228,7 @@ jobs:
     needs:
     - png
     - viewer
+    - gatelevel
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -263,6 +264,11 @@ jobs:
           </body>
           </html>
         EOF
+
+    - uses: actions/download-artifact@v3
+      with:
+        name: gatelevel-result
+        path: gatelevel-result
     - name: Setup Pages
       uses: actions/configure-pages@v2
     - name: Upload artifact
