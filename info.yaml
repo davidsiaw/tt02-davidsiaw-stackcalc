@@ -43,6 +43,10 @@ documentation:
     define the operation. Ops take at least 2 cycles to complete and at most
     5 cycles.
 
+    Opcodes and operands are always 4-bits wide and are applied to the 4 input
+    pins (pins 2-5) and need to be applied before the clock ticks up. In some
+    cases they need to be held for more than one cycle for them to apply.
+
     All input must be provided in a particular order. Below is a timing diagram
     that shows how to apply opcodes to the processor
 
@@ -145,7 +149,39 @@ documentation:
       - 4 cycles - load, load, wait, wait
 
   how_to_test: |                                # Instructions on how someone could test your project, include things like what buttons do what and how to set the clock if needed
-    8
+    The following diagram shows a simple test setup that can be used to test
+    the stack calculator
+
+    ```
+      VCC
+      |    __|__ pushbutton
+      +----.   .-------------+
+      |                     _|_
+      |          schmitt    \ /
+      |          trigger     O
+      |          inverter    |
+      |  __|__               +--> CLK  OUT0 -----+
+      +--.   .------------------> RST  OUT1 -.   |
+        button     +--------+---> IN0    .      _|_
+                   +        +---> IN1    .      \ / buffer
+                   +        +---> IN2    .       |
+                   +  DIP   +---> IN3            |
+                   + switch +---> MODE0          +--> 7 segment
+                   +        +---> MODE1          |
+                   +        +--                  +--> LED bar array
+                   +--------+--
+                                                  .
+                                                  .
+                                                  .
+    ```
+
+    By using a schmitt trigger for debounce and an inverter, it is possible
+    to perform a tick up with a specific DIP switch setting, allowing us
+    to experiment with different kinds of inputs in sequence.
+
+    Using the DIP switch you can also change the MODE pins to debug your
+    stack or display the output register contents.
+
   external_hw:  ""                              # Describe any external hardware needed
   language:     "verilog"                       # other examples include Verilog, Amaranth, VHDL, etc
   doc_link:     ""                              # URL to longer form documentation, eg the README.md in your repository
