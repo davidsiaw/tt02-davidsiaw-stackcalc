@@ -4,6 +4,12 @@
 
 This TinyTapeout submission is a 4-bit stack calculator.
 
+## Links
+
+- [3D Viewer](https://gds-viewer.tinytapeout.com/?model=https://davidsiaw.github.io/tt02-davidsiaw-stackcalc/tinytapeout.gds.gltf)
+- [Test Waveform](https://davidsiaw.github.io/vcdrom/?url=davidsiaw.github.io/tt02-davidsiaw-stackcalc/test-result/tb.vcd)
+- [Gate-level Test Waveform](https://davidsiaw.github.io/vcdrom/?url=davidsiaw.github.io/tt02-davidsiaw-stackcalc/gatelevel-result/tb.vcd)
+
 ## Pinouts
 
 INPUT0 clock (c)
