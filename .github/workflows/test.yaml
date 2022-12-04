@@ -26,3 +26,9 @@ jobs:
         make
         # make will return success even if the test fails, so check for failure in the results.xml
         ! grep failure results.xml
+
+    # send up test waveform
+    - uses: actions/upload-artifact@v3
+      with:
+        name: test-result
+        path: src/tb.vcd

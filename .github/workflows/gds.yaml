@@ -112,6 +112,13 @@ jobs:
         ls
         cp gatelevel-src/gatelevel.v gatelevel.v.bb
         make
+
+    # send up gatelevel waveform
+    - uses: actions/upload-artifact@v3
+      with:
+        name: gatelevel-result
+        path: src/tb.vcd
+
   png:
     needs: gds
     runs-on: ubuntu-latest
