@@ -20,12 +20,11 @@ Features:
 
 ## Pinouts
 
-INPUT0 clock (c)
-INPUT1 reset (let the clock tick a few times while reset is high)
-INPUT2-5 Inputs (opcodes and input go here)
-INPUT6-7 output mode
-
-OUTPUT0-7 depends on the mode
+- `io_in[0]` clock (c)
+- `io_in[1]` reset (let the clock tick a few times while reset is high)
+- `io_in[5:2]` Inputs (opcodes and input go here)
+- `io_in[6:7]` output mode
+- `io_out[7:0]` output depends on the Output Mode (not clocked)
 
 ## Opcodes
 
