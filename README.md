@@ -4,6 +4,8 @@
 
 This TinyTapeout submission is a 4-bit stack calculator.
 
+<img width="827" alt="スクリーンショット 2022-12-04 14 11 54" src="https://user-images.githubusercontent.com/874280/205475669-ca520fbe-dd69-4526-807c-0bf96077d782.png">
+
 ## Links
 
 - [3D Viewer](https://gds-viewer.tinytapeout.com/?model=https://davidsiaw.github.io/tt02-davidsiaw-stackcalc/tinytapeout.gds.gltf)
@@ -45,14 +47,14 @@ It implements the following opcodes
 
 ## Testing
 
-You can test the design yourself if you do not have the ASIC using an FPGA.
+You can test the design yourself if you do not have the ASIC, by using an FPGA.
 Currently I only test on a cheap GOWIN FGPA, the Tang Nano 9k.
 
 You will need docker installed.
 
 `make gowin`
 
-If you already have the Tang Nano 9k connected and can use `openFPGALoader`, you can go
+If you already have the Tang Nano 9k connected and can use [openFPGALoader](https://github.com/trabucayre/openFPGALoader), you can go
 
 `make upload_gowin`
 
