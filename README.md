@@ -10,7 +10,7 @@ Features:
 - multiply/divide circuit
 - fully writable output
 
-<img width="827" alt="スクリーンショット 2022-12-04 14 11 54" src="https://user-images.githubusercontent.com/874280/205475669-ca520fbe-dd69-4526-807c-0bf96077d782.png">
+<img width="827" alt="diff" src="https://user-images.githubusercontent.com/874280/205480274-25656a90-3983-454c-b499-7193c94a0262.png">
 
 ## Links
 
@@ -51,12 +51,16 @@ It implements the following opcodes
 - 0x2 below top of stack as 7segment
 - 0x3 top two values on the stack, top of stack is low nibble and below is high nibble
 
-## Testing
+## FPGA Testing
 
 You can test the design yourself if you do not have the ASIC, by using an FPGA.
 Currently I only test on a cheap GOWIN FGPA, the Tang Nano 9k.
 
 You will need docker installed.
+
+<img width="827" alt="dff2" src="https://user-images.githubusercontent.com/874280/205480277-2fad5593-4efd-4341-b398-af2b32d342a2.png">
+
+## FPGA Test commands
 
 `make gowin`
 
