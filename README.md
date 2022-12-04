@@ -4,6 +4,12 @@
 
 This TinyTapeout submission is a 4-bit stack calculator.
 
+Features:
+- 8-nibble deep stack
+- 16 nibbles of RAM
+- multiply/divide circuit
+- fully writable output
+
 <img width="827" alt="スクリーンショット 2022-12-04 14 11 54" src="https://user-images.githubusercontent.com/874280/205475669-ca520fbe-dd69-4526-807c-0bf96077d782.png">
 
 ## Links
