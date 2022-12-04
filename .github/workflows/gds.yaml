@@ -224,11 +224,43 @@ jobs:
             runs/wokwi/reports/metrics.csv
             runs/wokwi/reports/synthesis/1-synthesis.AREA 0.stat.rpt
 
+  test:
+    # ubuntu
+    runs-on: ubuntu-latest
+    steps:
+    # need the repo checked out
+    - name: checkout repo
+      uses: actions/checkout@v2
+
+    # install oss fpga tools
+    - name: install oss-cad-suite
+      uses: YosysHQ/setup-oss-cad-suite@v1
+      with:
+          python-override: true
+    - run: |
+        yosys --version
+        iverilog -V
+        cocotb-config --libpython
+        cocotb-config --python-bin
+    - name: test
+      run: |
+        cd src
+        make
+        # make will return success even if the test fails, so check for failure in the results.xml
+        ! grep failure results.xml
+
+    # send up test waveform
+    - uses: actions/upload-artifact@v3
+      with:
+        name: test-result
+        path: src/tb.vcd
+
   pages:
     needs:
     - png
     - viewer
     - gatelevel
+    - test
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -269,6 +301,10 @@ jobs:
       with:
         name: gatelevel-result
         path: gatelevel-result
+    - uses: actions/download-artifact@v3
+      with:
+        name: test-result
+        path: test-result
     - name: Setup Pages
       uses: actions/configure-pages@v2
     - name: Upload artifact
