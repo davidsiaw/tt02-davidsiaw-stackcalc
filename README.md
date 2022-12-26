@@ -4,6 +4,9 @@
 
 This TinyTapeout submission is a 4-bit stack calculator.
 
+<img width="684" alt="スクリーンショット 2022-12-26 10 49 35" src="https://user-images.githubusercontent.com/874280/209491582-deb740fd-c6ce-480c-bb9d-6e2377068d6e.png">
+
+
 Features:
 - 8-nibble deep stack
 - 16 nibbles of RAM
